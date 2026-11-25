@@ -1,0 +1,2476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Agrotres S.A. · Calidad e Inocuidad (Est. 5258)</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --primary: #0f4c81;
+      --primary-dark: #0a365c;
+      --primary-light: #e0f2fe;
+      --ok-bg: #dcfce7;
+      --ok-tx: #166534;
+      --warn-bg: #fef3c7;
+      --warn-tx: #92400e;
+      --bad-bg: #fee2e2;
+      --bad-tx: #991b1b;
+      --haccp-bg: #ffedd5;
+      --haccp-tx: #9a3412;
+      --pe-bg: #dbeafe;
+      --pe-tx: #1e40af;
+      --reg-bg: #d1fae5;
+      --reg-tx: #065f46;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding-bottom: 36px;
+    }
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(160deg, #0a365c 0%, #0f4c81 55%, #1e293b 100%);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 22px 20px;
+      box-shadow: 0 20px 45px rgba(2, 6, 23, 0.35);
+    }
+
+    .auth-header { text-align: center; margin-bottom: 18px; }
+
+    .auth-badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .auth-title { margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text); }
+    .auth-sub { margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+
+    .auth-error {
+      background: var(--bad-bg);
+      color: var(--bad-tx);
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .auth-footer-note {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 0.73rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .app-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 13px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .brand-title { font-size: 1rem; font-weight: 700; margin: 0; }
+    .brand-sub { font-size: 0.75rem; opacity: 0.88; margin: 2px 0 0; }
+
+    .date-pill {
+      background: rgba(255, 255, 255, 0.16);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .sector-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .sector-tabs::-webkit-scrollbar { display: none; }
+
+    .sector-tab {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .sector-tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .main-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 14px 16px;
+    }
+
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 8px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px;
+      text-align: center;
+    }
+
+    .stat-num { font-size: 1.22rem; font-weight: 800; color: var(--primary); }
+    .stat-lbl { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+
+    .quick-regs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .quick-regs::-webkit-scrollbar { display: none; }
+
+    .quick-chip {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .quick-chip.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .form-control, textarea.form-control {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      background: #fff;
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    textarea.form-control {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .form-control:focus {
+      outline: 2px solid var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .type-filters {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .mini-chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mini-chip.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .doc-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .doc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .doc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .doc-code { font-weight: 800; font-size: 0.9rem; color: var(--primary); }
+
+    .badge { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
+    .b-HACCP { background: var(--haccp-bg); color: var(--haccp-tx); }
+    .b-PE { background: var(--pe-bg); color: var(--pe-tx); }
+    .b-Registro { background: var(--reg-bg); color: var(--reg-tx); }
+
+    .doc-title { font-size: 0.98rem; font-weight: 700; margin: 0 0 6px; }
+    .doc-vigencia { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+    .tag-meta {
+      background: #f1f5f9;
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .tag-meta.v2026 { background: var(--ok-bg); color: var(--ok-tx); }
+
+    .doc-params { margin: 0 0 8px; padding-left: 16px; font-size: 0.83rem; }
+    .doc-params li { margin-bottom: 3px; }
+
+    .doc-note {
+      background: #fffbeb;
+      border-left: 3px solid #f59e0b;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      color: #78350f;
+      border-radius: 0 6px 6px 0;
+      margin-top: 6px;
+    }
+
+    .doc-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .panel-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 15px;
+      margin-bottom: 14px;
+    }
+
+    .panel-title { margin: 0 0 10px; font-size: 1rem; font-weight: 700; }
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .rule-banner {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0c4a6e;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 7px;
+      background: #f8fafc;
+      font-size: 0.84rem;
+    }
+    .check-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .state-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .state-btn {
+      border: 1.5px solid #cbd5e1;
+      background: #fff;
+      padding: 10px 6px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .state-btn.sel-ok { background: var(--ok-bg); border-color: #16a34a; color: var(--ok-tx); }
+    .state-btn.sel-obs { background: var(--warn-bg); border-color: #d97706; color: var(--warn-tx); }
+    .state-btn.sel-bad { background: var(--bad-bg); border-color: #dc2626; color: var(--bad-tx); }
+
+    .deviation-box {
+      background: #fff7ed;
+      border: 1.5px solid #f97316;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .deviation-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #9a3412;
+      margin: 0 0 8px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-primary:active { background: var(--primary-dark); }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 7px 11px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-danger-sm {
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .log-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .log-item.is-desvio {
+      border-left: 4px solid #dc2626;
+      background: #fffafa;
+    }
+
+    .log-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+
+    .status-pill { font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+    .st-Conforme { background: var(--ok-bg); color: var(--ok-tx); }
+    .st-Observación { background: var(--warn-bg); color: var(--warn-tx); }
+    .st-No { background: var(--bad-bg); color: var(--bad-tx); }
+
+    .log-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; }
+    .log-val { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+
+    .desvio-detail {
+      background: #fef2f2;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: #7f1d1d;
+      margin-top: 6px;
+    }
+    .desvio-detail div { margin-bottom: 3px; }
+    .desvio-detail div:last-child { margin-bottom: 0; }
+
+    .toolbar-export { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .hidden { display: none !important; }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 99;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 520px) {
+      .form-row-2 { grid-template-columns: 1fr; }
+    }
+  
+    .mode-switch-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      gap: 4px;
+    }
+    .cap-subtabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .cap-subtabs::-webkit-scrollbar { display: none; }
+    .cap-subtab {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .cap-subtab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .month-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .m-chip {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .m-chip.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .topic-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .topic-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .topic-title {
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+    .b-ok { background: var(--ok-bg); color: var(--ok-tx); }
+    .b-warn { background: var(--warn-bg); color: var(--warn-tx); }
+    .b-info { background: var(--primary-light); color: var(--primary); }
+    .matrix-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      min-width: 680px;
+    }
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--border);
+      padding: 6px 5px;
+      text-align: center;
+    }
+    .matrix-table th {
+      background: #f8fafc;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .matrix-table td.left-col { text-align: left; padding-left: 8px; }
+    .x-mark {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 5px;
+    }
+    .video-frame-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0f172a;
+      margin-bottom: 10px;
+    }
+    .video-frame-wrap iframe,
+    .video-frame-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-placeholder {
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 20px 14px;
+      text-align: center;
+      background: #f8fafc;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+    .quiz-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+    }
+    .quiz-q {
+      font-weight: 700;
+      font-size: 0.86rem;
+      margin-bottom: 7px;
+      color: var(--text);
+    }
+    .quiz-opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.83rem;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+    .quiz-result-banner {
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+
+.cert-sheet {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 2px solid #0f4c81;
+      border-radius: 10px;
+      padding: 28px 34px 24px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+      max-width: 920px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .cert-sheet::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .cert-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: linear-gradient(90deg, #0a365c 0%, #0f4c81 55%, #b45309 100%);
+    }
+
+    .cert-corner-tl, .cert-corner-br {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      pointer-events: none;
+    }
+    .cert-corner-tl {
+      top: 16px;
+      left: 16px;
+      border-top: 3px solid #b45309;
+      border-left: 3px solid #b45309;
+    }
+    .cert-corner-br {
+      bottom: 16px;
+      right: 16px;
+      border-bottom: 3px solid #b45309;
+      border-right: 3px solid #b45309;
+    }
+
+    .cert-emblem {
+      width: 54px;
+      height: 54px;
+      margin: 4px auto 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f4c81, #0a365c);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(15, 76, 129, 0.28);
+      border: 2px solid #f59e0b;
+    }
+
+    .cert-header {
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #0a365c;
+      text-transform: uppercase;
+    }
+
+    .cert-sub {
+      font-size: 0.78rem;
+      color: #475569;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+      margin-bottom: 10px;
+    }
+
+    .cert-divider {
+      width: 160px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #b45309, transparent);
+      margin: 8px auto 12px;
+    }
+
+    .cert-main-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 4px 0 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .cert-body {
+      font-size: 0.98rem;
+      color: #1e293b;
+      max-width: 740px;
+      margin: 0 auto 14px;
+      line-height: 1.65;
+    }
+
+    .cert-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0a365c;
+      border-bottom: 2px solid #b45309;
+      display: inline-block;
+      padding: 2px 28px 4px;
+      margin: 6px 0 8px;
+    }
+
+    .cert-topic-box {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1.5px solid #7dd3fc;
+      border-left: 5px solid #0f4c81;
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin: 12px auto 14px;
+      max-width: 700px;
+      font-weight: 800;
+      color: #0a365c;
+      font-size: 1.06rem;
+      letter-spacing: 0.02em;
+    }
+
+    .cert-meta-pills {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .cert-meta-pill {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      color: #1e293b;
+    }
+
+    .cert-signs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
+      gap: 20px;
+      margin-top: 26px;
+      padding: 0 18px;
+      font-size: 0.8rem;
+      color: #334155;
+    }
+
+    .sign-line {
+      border-top: 1.5px solid #475569;
+      padding-top: 6px;
+      margin: 0 10px;
+    }
+
+    .cert-seal {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 2px dashed #0f4c81;
+      color: #0f4c81;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.62rem;
+      font-weight: 800;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: rgba(224, 242, 254, 0.35);
+      transform: rotate(-6deg);
+    }
+
+    .cert-footer-code {
+      margin-top: 14px;
+      font-size: 0.7rem;
+      color: #64748b;
+      letter-spacing: 0.04em;
+    }
+
+    .hidden { display: none !important; }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 99;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 560px) {
+      .form-row-2 { grid-template-columns: 1fr; }
+      .cert-signs { grid-template-columns: 1fr; gap: 20px; }
+    }
+
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 6mm;
+      }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      #authOverlay, .app-header, .nav-tabs, .cap-subtabs,
+      #viewDashboard, #viewAuditoria, #viewPlanilla,
+      #capsub-cronograma, #capsub-cursada, #capsub-planilla,
+      .no-print, #toast, button, select {
+        display: none !important;
+      }
+      .main-wrap, #viewCap, #capsub-certificado, .cert-sheet-wrap, #certPrintArea {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        overflow: visible !important;
+      }
+      .cert-sheet {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 12mm 16mm !important;
+        border: 2px solid #0f4c81 !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .cert-main-title { font-size: 20pt; }
+      .cert-name { font-size: 18pt; }
+      .cert-body { font-size: 11pt; }
+      .cert-topic-box { font-size: 12pt; padding: 10px 16px; }
+    }
+  
+  </style>
+</head>
+<body>
+
+  <div id="authOverlay" class="auth-overlay">
+    <form id="loginForm" class="auth-card" autocomplete="off">
+      <div class="auth-header">
+        <div class="auth-badge">EST. OFICIAL N.º 5258 · ACCESO RESTRINGIDO</div>
+        <h2 class="auth-title">Frigorífico Agrotres S.A.</h2>
+        <p class="auth-sub">Ingresá con tu usuario y clave para operar</p>
+      </div>
+
+      <div id="authError" class="auth-error hidden">Usuario o contraseña incorrectos.</div>
+
+      <div class="form-group">
+        <label class="form-label" for="loginUser">Usuario</label>
+        <input id="loginUser" type="text" class="form-control" placeholder="Ej: calidad" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="loginPass">Clave</label>
+        <input id="loginPass" type="password" class="form-control" placeholder="Ingresá tu clave" required />
+      </div>
+
+      <button type="submit" class="btn-primary">Ingresar al Sistema</button>
+
+      <div class="auth-footer-note">
+        <strong>Usuarios habilitados por defecto:</strong><br/>
+        • <code>calidad</code> / clave: <code>agrotres5258</code><br/>
+        • <code>verificador</code> / clave: <code>planta2026</code><br/>
+        • <code>mantenimiento</code> / clave: <code>mant5258</code><br/>
+        <em>Podés editarlos en <code>AUTH_USERS</code> dentro del código.</em>
+      </div>
+    </form>
+  </div>
+
+  <header class="app-header">
+    <div class="header-top">
+      <div>
+        <h1 class="brand-title">Frigorífico Agrotres S.A.</h1>
+        <p class="brand-sub">Est. Oficial N.º 5258 · Calidad e Inocuidad</p>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+        <span class="user-pill" id="activeUserBadge"></span>
+        <button id="btnLogout" class="btn-logout" type="button">Salir</button>
+        <div class="date-pill" id="todayBadge"></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sector-tabs" id="sectorTabs" aria-label="Sectores operativos">
+    <button class="sector-tab active" data-sector="ALL" type="button">Todos</button>
+    <button class="sector-tab" data-sector="corrales" type="button">Corrales</button>
+    <button class="sector-tab" data-sector="faena" type="button">Playa Faena</button>
+    <button class="sector-tab" data-sector="camaras" type="button">Cámaras y Desposte</button>
+    <button class="sector-tab" data-sector="servicios" type="button">Agua, Químicos y Gral.</button>
+  </nav>
+
+  <main class="main-wrap">
+    <div class="mode-switch-3" id="mainModeSwitch">
+      <button id="btnModeDaily" class="mode-btn active" type="button">Registros Diarios</button>
+      <button id="btnModeDocs" class="mode-btn" type="button">Base Documental</button>
+      <button id="btnModeCap" class="mode-btn" type="button">Capacitaciones (R-02)</button>
+    </div>
+
+    <section class="summary-strip" id="summaryStrip"></section>
+
+    <section id="viewDaily">
+      <div class="quick-regs" id="quickRegsBar">
+        <button class="quick-chip active" data-reg="R-04" type="button">R-04 BPM</button>
+        <button class="quick-chip" data-reg="R-05" type="button">R-05 POES</button>
+        <button class="quick-chip" data-reg="R-09" type="button">R-09 Esterilizadores</button>
+        <button class="quick-chip" data-reg="R-10" type="button">R-10 Cámaras</button>
+        <button class="quick-chip" data-reg="R-08" type="button">R-08 Cloro Libre</button>
+      </div>
+
+      <div class="panel-box">
+        <h2 class="panel-title">Control Diario</h2>
+
+        <div class="form-group">
+          <label class="form-label" for="regSelect">Planilla</label>
+          <select id="regSelect" class="form-control"></select>
+        </div>
+
+        <div id="ruleBanner" class="rule-banner hidden"></div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="regDate">Fecha</label>
+            <input id="regDate" type="date" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regTime">Hora</label>
+            <input id="regTime" type="time" class="form-control" />
+          </div>
+        </div>
+
+        <div id="dynamicFields"></div>
+
+        <div class="form-group">
+          <label class="form-label">Condición / Resultado</label>
+          <div class="state-selector" id="stateSelector">
+            <button type="button" class="state-btn sel-ok" data-state="Conforme">✓ Conforme</button>
+            <button type="button" class="state-btn" data-state="Observación">! Observación</button>
+            <button type="button" class="state-btn" data-state="No conforme / Desvío">✕ Desvío</button>
+          </div>
+        </div>
+
+        <div id="deviationBox" class="deviation-box hidden">
+          <div class="deviation-title">⚠ Registro de Desvío y Acción Correctiva</div>
+          <div class="form-group">
+            <label class="form-label" for="desvioQuePaso">¿Qué pasó? (descripción del desvío / hallazgo)</label>
+            <textarea id="desvioQuePaso" class="form-control" placeholder="Ej: Esterilizador zona sucia a 78,5 °C; o cámara 2 a 8,5 °C; o cloro en 0,10 ppm..."></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="desvioSolucion">¿Cómo se solucionó? (acción correctiva / destino del producto)</label>
+            <textarea id="desvioSolucion" class="form-control" placeholder="Ej: Se pasó a esterilizador eléctrico ≥ 82 °C, se ajustó vapor y se re-verificó a 84 °C..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="regResp">Responsable / Verificador</label>
+            <input id="regResp" type="text" class="form-control" placeholder="Ej: Calidad / Turno mañana" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regObs">Nota adicional (opcional)</label>
+            <input id="regObs" type="text" class="form-control" placeholder="Ej: Lote / Garrón / Termómetro" />
+          </div>
+        </div>
+
+        <button id="btnSaveEntry" class="btn-primary" type="button">Guardar Registro Diario</button>
+      </div>
+
+      <div class="panel-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+          <h2 class="panel-title" style="margin:0;">Historial del Día</h2>
+          <input id="filterLogDate" type="date" class="form-control" style="width:auto; padding:6px 10px; font-size:0.82rem;" />
+        </div>
+
+        <div class="toolbar-export">
+          <button id="btnExportCsv" class="btn-secondary" type="button">Descargar Excel / CSV</button>
+          <button id="btnExportJson" class="btn-secondary" type="button">Respaldo JSON</button>
+          <button id="btnShowAllDates" class="btn-secondary" type="button">Ver todo</button>
+        </div>
+
+        <div id="logsContainer"></div>
+      </div>
+    </section>
+
+    <section id="viewDocs" class="hidden">
+      <div class="form-group">
+        <input id="docSearch" type="search" class="form-control" placeholder="Buscar código (PE-09, R-10), título o parámetro..." />
+      </div>
+
+      <div class="type-filters" id="typeFilters">
+        <button class="mini-chip active" data-type="ALL" type="button">Todos</button>
+        <button class="mini-chip" data-type="HACCP" type="button">HACCP</button>
+        <button class="mini-chip" data-type="PE" type="button">Procedimientos (PE)</button>
+        <button class="mini-chip" data-type="Registro" type="button">Registros (R)</button>
+      </div>
+
+      <div id="docList" class="doc-list"></div>
+    </section>
+
+    <!-- VISTA 3: CAPACITACIONES (R-02) -->
+    <section id="viewCap" class="hidden">
+      <div class="cap-subtabs" id="capSubTabs">
+        <button class="cap-subtab active" data-capsub="cronograma" type="button">1. Cronograma Anual</button>
+        <button class="cap-subtab" data-capsub="cursada" type="button">2. Video + Evaluación + Asistencia</button>
+        <button class="cap-subtab" data-capsub="certificado" type="button">3. Certificado</button>
+        <button class="cap-subtab" data-capsub="planilla" type="button">4. Planilla Asistencia (R-02)</button>
+      </div>
+
+      <div id="capsub-cronograma">
+        <div class="panel-box">
+          <h2 class="panel-title">Cronograma Anual de Capacitaciones</h2>
+          <p style="font-size:0.82rem; color:var(--muted); margin:0 0 10px;">
+            <strong>Disertante:</strong> Responsable de Calidad - Macarena Schischke. Filtrá por mes o seleccioná un tema para iniciar la capacitación, cargar su enlace de video y tomar asistencia.
+          </p>
+          <div class="month-filter-bar" id="monthFilterBar">
+            <button class="m-chip active" data-mes="ALL" type="button">Todos los meses</button>
+            <button class="m-chip" data-mes="ENE" type="button">ENE</button>
+            <button class="m-chip" data-mes="FEB" type="button">FEB</button>
+            <button class="m-chip" data-mes="MAR" type="button">MAR</button>
+            <button class="m-chip" data-mes="ABR" type="button">ABR</button>
+            <button class="m-chip" data-mes="MAY" type="button">MAY</button>
+            <button class="m-chip" data-mes="JUN" type="button">JUN</button>
+            <button class="m-chip" data-mes="JUL" type="button">JUL</button>
+            <button class="m-chip" data-mes="AGO" type="button">AGO</button>
+            <button class="m-chip" data-mes="SEP" type="button">SEP</button>
+            <button class="m-chip" data-mes="OCT" type="button">OCT</button>
+            <button class="m-chip" data-mes="NOV" type="button">NOV</button>
+            <button class="m-chip" data-mes="DIC" type="button">DIC</button>
+          </div>
+          <div id="topicsCardsList"></div>
+        </div>
+
+        <div class="panel-box">
+          <h2 class="panel-title">Matriz Anual Completa</h2>
+          <div class="matrix-wrap">
+            <table class="matrix-table" id="matrixTable"></table>
+          </div>
+        </div>
+      </div>
+
+      <div id="capsub-cursada" class="hidden">
+        <div class="panel-box">
+          <h2 class="panel-title">Capacitación, Video y Evaluación</h2>
+          <div class="form-group">
+            <label class="form-label" for="selTema">Tema de capacitación</label>
+            <select id="selTema" class="form-control"></select>
+          </div>
+          <div id="temaMetaBox" class="rule-banner"></div>
+
+          <div id="videoViewerArea"></div>
+
+          <details style="margin-bottom:14px;">
+            <summary class="btn-secondary" style="display:inline-block; cursor:pointer; list-style:none;">
+              Configurar / pegar enlace del video
+            </summary>
+            <div style="margin-top:10px; padding:12px; border:1px solid var(--border); border-radius:10px; background:#f8fafc;">
+              <div class="form-group">
+                <label class="form-label" for="inputVideoUrl">Enlace de YouTube, Google Drive o archivo de video (.mp4 / .webm)</label>
+                <input id="inputVideoUrl" type="url" class="form-control" placeholder="https://www.youtube.com/watch?v=... o enlace de Drive" />
+              </div>
+              <button id="btnSaveVideoUrl" class="btn-secondary" type="button">Guardar enlace del tema</button>
+            </div>
+          </details>
+
+          <div class="form-group">
+            <label class="check-row" style="background:#fff; cursor:pointer;">
+              <input id="chkEvaluacionExterna" type="checkbox" />
+              <span>Evaluación realizada en formulario externo / impreso (omitir cuestionario en pantalla)</span>
+            </label>
+          </div>
+
+          <div id="quizSection">
+            <div id="quizQuestionsContainer"></div>
+            <div id="quizResultBanner" class="quiz-result-banner hidden"></div>
+            <button id="btnCorregirQuiz" class="btn-secondary" type="button" style="margin-bottom:14px;">
+              Corregir evaluación (mínimo 75%)
+            </button>
+          </div>
+
+          <div id="externalEvalBox" class="hidden" style="padding:12px; border:1px solid var(--border); border-radius:10px; background:#f8fafc; margin-bottom:14px;">
+            <div class="form-row-2">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="extNota">Calificación / Resultado</label>
+                <input id="extNota" type="text" class="form-control" placeholder="Ej: Aprobado 90%" />
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="extEficacia">Verificación de eficacia (R-02)</label>
+                <select id="extEficacia" class="form-control">
+                  <option value="Eficaz">Eficaz</option>
+                  <option value="Requiere refuerzo">Requiere refuerzo</option>
+                  <option value="No eficaz">No eficaz</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border); padding-top:14px;">
+            <h3 class="panel-title">Registro de Asistencia y Emisión de Certificado</h3>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="asistNombre">Nombre y Apellido *</label>
+                <input id="asistNombre" type="text" class="form-control" placeholder="Ej: Juan Pérez" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="asistDni">DNI *</label>
+                <input id="asistDni" type="text" class="form-control" placeholder="Ej: 30123456" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="asistSector">Sector / Puesto</label>
+                <input id="asistSector" type="text" class="form-control" placeholder="Ej: Playa Faena / Despostada" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="asistObs">Observación</label>
+                <input id="asistObs" type="text" class="form-control" placeholder="Opcional" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="asistFecha">Fecha</label>
+                <input id="asistFecha" type="text" class="form-control" readonly />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="asistHora">Hora</label>
+                <input id="asistHora" type="text" class="form-control" readonly />
+              </div>
+            </div>
+            <button id="btnRegistrarAsistencia" class="btn-primary" type="button">
+              Registrar Asistencia y Generar Certificado
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="capsub-certificado" class="hidden">
+        <div class="panel-box no-print">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:220px;">
+              <label class="form-label" for="selCertRegistro">Seleccionar certificado emitido</label>
+              <select id="selCertRegistro" class="form-control"></select>
+            </div>
+            <button type="button" class="btn-primary" style="width:auto; padding:10px 16px;" onclick="window.print()">
+              Imprimir / Guardar PDF (A4)
+            </button>
+          </div>
+        </div>
+
+        <div class="cert-sheet-wrap">
+          <div id="certSheetContent" class="cert-sheet"></div>
+        </div>
+      </div>
+
+      <div id="capsub-planilla" class="hidden">
+        <div class="panel-box">
+          <h2 class="panel-title">Planilla de Asistencia y Eficacia (R-02)</h2>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="filterPlanillaTema">Filtrar por tema</label>
+              <select id="filterPlanillaTema" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="filterPlanillaSearch">Buscar asistente / DNI / fecha</label>
+              <input id="filterPlanillaSearch" type="search" class="form-control" placeholder="Nombre, DNI, sector o fecha..." />
+            </div>
+          </div>
+          <div class="toolbar-export">
+            <button id="btnExportAsistCsv" class="btn-secondary" type="button">Descargar Asistencia CSV</button>
+            <button id="btnExportAsistJson" class="btn-secondary" type="button">Respaldo Asistencia JSON</button>
+          </div>
+          <div id="asistenciasListContainer"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+    const DOCS_DB = [{"id": "PE-01", "codigo": "PE-01", "titulo": "Recepción de Hacienda y Corrales", "tipo": "PE", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "03", "vigencia": "2025-11-11", "responsables": ["Transportistas", "Operarios de corrales", "SIV", "Calidad"], "registros": ["R-04", "R-25"], "parametros": ["Control documental al arribo: DTE, Guía de traslado y certificado de lavado de transporte", "Control de precintos, marcas, conteo, caravanas, agua en bebederos y espacio (Decreto 4238/68)", "Aislamiento de tropas sospechosas y manejo calmo sin corridas"], "nota_revision": "Rev. 03 (11/11/2025) incorpora planilla R-25."}, {"id": "PE-04", "codigo": "PE-04", "titulo": "Animales Caídos", "tipo": "PE", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "04", "vigencia": "2026-11-10", "responsables": ["Operarios de corrales", "SIV", "Jefe de Calidad"], "registros": ["R-11"], "parametros": ["Prioridad de descarga y aviso al SIV mediante Vales para animales caídos", "Descenso previo de animales en pie, insensibilización con Jarvis modelo PAS y degüello inmediato previo a traslado a sala de emergencia", "Identificación, sangrado, cuereado, evisceración e inspección sanitaria por SIV"], "nota_revision": "Rev. 04 (10/11/2026) actualiza procedimiento operativo."}, {"id": "PE-05", "codigo": "PE-05", "titulo": "Animales Muertos", "tipo": "PE", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "02", "vigencia": "2025-02-13", "responsables": ["Operarios de corrales", "SIV", "Jefe de Calidad"], "registros": ["R-11"], "parametros": ["Prioridad de descarga y aviso al SIV mediante Vales para animales muertos", "Bajada de animales en pie, traslado a sala de necropsia sobre catre, identificación por marca y tarjeta", "Necropsia según Decreto 4238/68 y envío al digestor tras diagnóstico del SIV"], "nota_revision": "Verificar coherencia de envío a digestor con PE-03."}, {"id": "PE-17", "codigo": "PE-17", "titulo": "Control de Caravanas", "tipo": "PE", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "01", "vigencia": "2025-11-14", "responsables": ["Personal de Playa/Recepción", "Veterinario", "Calidad"], "registros": ["R-25", "R-22"], "parametros": ["Verificación documental (DTE y TRI) y control físico animal por animal (Circular SENASA 3884 rev. 2)", "Rechazo del lote si > 5 % presenta fallas de identificación, caravanas adulteradas o documentación inválida", "Conservación de registros por al menos 2 años"], "nota_revision": "Unificar referencia de formulario hacia R-25 (en texto figura R-22 / RCC-01)."}, {"id": "PE-20", "codigo": "PE-20", "titulo": "Alimentación Previo a Faena en Corrales", "tipo": "PE", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "02", "vigencia": "2026-06-10", "responsables": ["Operarios de corrales", "SIV", "Jefe de Calidad"], "registros": ["R-24"], "parametros": ["Registro de hora de ingreso y evaluación del tiempo estimado de permanencia", "Suministro de alimento cuando la permanencia prevista supere las 12 horas en corrales", "Registro en planilla R-24 cada vez que se suministre alimento"], "nota_revision": "Unificar cita RG-24 del cuerpo a R-24."}, {"id": "R-11", "codigo": "R-11", "titulo": "Bienestar Animal", "tipo": "Registro", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Verificador", "Responsable"], "registros": ["PE-02", "PE-04", "PE-05"], "parametros": ["Vocalización en manga y cajón (Aceptable ≤ 1/20, No aceptable 1/10, Grave ≥ 5/10)", "Resbalones y caídas (Excelente sin resbalones, Aceptable ≤ 1/20)", "Insensibilización efectiva (ausencia de signos de sensibilidad)"], "nota_revision": "Corregir errata tipográfica en título de signos de insensibilización.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Punto / Etapa", "type": "select", "options": ["Manga / Arribo", "Cajón de noqueo", "Insensibilización"]}, {"key": "valor", "label": "Indicador / Observación cuantitativa", "type": "text", "placeholder": "Ej: 0/20 vocalizaciones, 100% insensibilizado"}], "modo_control": "simple"}, {"id": "R-24", "codigo": "R-24", "titulo": "Suministro de Alimento en Corrales", "tipo": "Registro", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "01", "vigencia": "2025-08-13", "responsables": ["Responsable", "Verificador"], "registros": ["PE-20"], "parametros": ["Registro de fecha, hora, tropa, corral y suministro cuando permanencia > 12 hs"], "nota_revision": "Alineado con PE-20.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Tropa / Corral", "type": "text", "placeholder": "Ej: Tropa 14 - Corral 3"}, {"key": "valor", "label": "Horas permanencia / Ración", "type": "text", "placeholder": "Ej: 14 hs - Fardo suministrado"}], "modo_control": "simple"}, {"id": "R-25", "codigo": "R-25", "titulo": "Control de Caravanas", "tipo": "Registro", "sector_tab": "corrales", "sector_nombre": "Recepción y Corrales", "revision": "01", "vigencia": "2025-11-11", "responsables": ["Personal Recepción/Playa", "Veterinario", "Calidad"], "registros": ["PE-01", "PE-17"], "parametros": ["Verificación documental (DTE, TRI, cantidades) y control físico oreja izquierda/derecha animal por animal"], "nota_revision": "Incorporado en PE-01 rev. 03 (11/11/2025).", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Tropa / DTE", "type": "text", "placeholder": "Ej: Tropa 14 - DTE 001245"}, {"key": "valor", "label": "Animales controlados / Fallas", "type": "text", "placeholder": "Ej: 35 cabezas - 0 sin caravana (0%)"}], "modo_control": "simple"}, {"id": "HACCP-AP-FR", "codigo": "HACCP-AP-FR", "titulo": "Análisis de Peligros - Faena y Recepción", "tipo": "HACCP", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "Vigente", "vigencia": "Vigente", "responsables": ["Equipo HACCP", "Jefe de Calidad", "SIV"], "registros": ["R-04", "R-05", "R-07", "R-09", "R-11", "R-13", "R-26"], "parametros": ["Evaluación de peligros biológicos, químicos y físicos en recepción, faena y enfriado", "Articulación con BPM, POES y Puntos Críticos de Control (PCC)"], "nota_revision": "Contrastar límites críticos con M-10 y R-13."}, {"id": "M-10", "codigo": "M-10", "titulo": "Manual HACCP - Recepción de Hacienda y Playa de Faena", "tipo": "HACCP", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "Vigente", "vigencia": "Vigente", "responsables": ["Jefe de Calidad", "Jefe de Faena", "SIV"], "registros": ["R-04", "R-05", "R-07", "R-09", "R-11", "R-13", "R-26"], "parametros": ["Plan HACCP para recepción y playa de faena bovina/ovina", "Monitoreo, límites críticos, acciones correctivas y verificación"], "nota_revision": "Documento rector del sector faena."}, {"id": "PE-02", "codigo": "PE-02", "titulo": "Faena", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "03", "vigencia": "2026-06-10", "responsables": ["Operarios de playa de faena", "Jefe de faena", "Jefe de Calidad"], "registros": ["R-04", "R-05", "R-09", "R-11", "R-12", "R-26"], "parametros": ["División zona sucia, intermedia y limpia; degüello < 60 s post-insensibilización", "Esterilización de cuchillos, herramientas, sierra y noria con agua ≥ 82 °C; lavado de manos ~40 °C", "Inspección veterinaria, dressing, lavado final a presión, oreo y cámaras"], "nota_revision": "Rev. 03 vigente desde 10/06/2026."}, {"id": "PE-03", "codigo": "PE-03", "titulo": "Manejo de Material de Riesgo (MRDEEB)", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "04", "vigencia": "2025-11-20", "responsables": ["Operarios Faena/Menudencias/Dressing", "Jefe de Calidad", "SIV"], "registros": ["R-07", "R-26"], "parametros": ["MRDEEB: cerebro, cerebelo, bulbo raquídeo, médula espinal y duramadre (Circular 3528/2003)", "Casco rojo, cuchillo rojo (médula) vs. blanco; desnaturalización con Creolina; digestor 133 °C, 3 atm, 1 h", "Conservación de registros ≥ 2 años"], "nota_revision": "Auditoría: contrastar parámetros de digestor con PE-06 (125 °C / 1,5 atm) y R-07 (5 hs)."}, {"id": "PE-06", "codigo": "PE-06", "titulo": "Manejo de Digestor", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "02", "vigencia": "2025-02-13", "responsables": ["Mantenimiento", "Jefe de faena", "SIV", "Calidad"], "registros": ["R-07"], "parametros": ["Purga hasta flujo constante de vapor y 110 °C; digestión a 125 °C y 1,5 atm por 1 h (Circular 3456)", "Verificación anual con esporas de Bacillus stearothermophilus"], "nota_revision": "Auditoría: armonizar temperatura/presión/tiempo con PE-03 y R-07."}, {"id": "PE-15", "codigo": "PE-15", "titulo": "Caída de Res", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "02", "vigencia": "2025-04-21", "responsables": ["Operarios", "Supervisor", "Calidad", "Veterinario Oficial"], "registros": ["R-22"], "parametros": ["Detención inmediata, aislamiento, retiro con ganchos/bachas inoxidables a zona de sospechosas", "Recorte sanitario, descontaminación con ácido láctico o decomiso a sebería y limpieza/desinfección"], "nota_revision": "Auditoría: armonizar criterio operativo con PE-18 (6.1.1)."}, {"id": "PE-16", "codigo": "PE-16", "titulo": "Cisticercosis", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "03", "vigencia": "2025-11-13", "responsables": ["SIV", "Responsable de faena", "Calidad"], "registros": ["R-22"], "parametros": ["Quistes múltiples: decomiso total a digestor (Decreto 4238/68)", "Quistes aislados: retención (≤ 7 °C en núcleo) y congelación ≤ -10 °C por ≥ 20 días consecutivos"], "nota_revision": "Usa código R-22 (compartido con PE-15 y PE-18)."}, {"id": "PE-18", "codigo": "PE-18", "titulo": "Contingencias", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "02", "vigencia": "2025-04-21", "responsables": ["Jefe de faena", "Jefe de Calidad", "Supervisor", "Mantenimiento"], "registros": ["R-22"], "parametros": ["Caída de medias reses/cuartos/cortes: recorte, control de calidad y ácido láctico al 2 %", "Condensación en cámaras: secado, retención/muestreo Listeria y ácido láctico al 2 %", "Falla esterilizadores (< 82 °C): detención hasta esterilizador eléctrico de emergencia ≥ 82 °C"], "nota_revision": "Auditoría: revisar salto de numeración 6.2 a 6.4."}, {"id": "PE-19", "codigo": "PE-19", "titulo": "Operatividad Culato", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "02", "vigencia": "2026-06-10", "responsables": ["Operario", "Supervisor", "Calidad"], "registros": ["R-09", "R-05"], "parametros": ["Pinza suspendida en gancho mosquetón inoxidable, esterilizada antes y después de cada maniobra", "Enucleación controlada sin ruptura intestinal y atado de culato"], "nota_revision": "Rev. 02 (10/06/2026); unificar cita RG-09/RG-05 a R-09/R-05."}, {"id": "PE-21", "codigo": "PE-21", "titulo": "Lavado y Desinfección de Utensilios", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-08-18", "responsables": ["Operarios Faena y Despostada", "Supervisores", "Calidad"], "registros": ["R-09"], "parametros": ["Enjuague → detergente y cepillo → enjuague caliente → inmersión en agua ≥ 82 °C → secado/afilado", "Frecuencia: entre animal y animal en Faena; cada 40 minutos en Despostada"], "nota_revision": "Vincular planilla de validación microbiológica P-MICRO."}, {"id": "PE-22", "codigo": "PE-22", "titulo": "Limpieza y Lubricación de Roldanas", "tipo": "PE", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "02", "vigencia": "2026-09-20", "responsables": ["Operarios Faena", "Operarios Lavado", "Supervisor / Calidad"], "registros": ["R-19"], "parametros": ["Traslado exterior con montacarga y reingreso por tronera", "1° BAUN-R 10 % (60–70 °C, 5–8 min) → 2° Enjuague ≥ 80 °C → 3° FOSFACID 09 10 % (condicional) + enjuague ≥ 80 °C → 4° LUBRIDUAL puro"], "nota_revision": "Rev. 02 vigente desde 20/09/2026."}, {"id": "R-04", "codigo": "R-04", "titulo": "Control BPM Faena (y Garrones 1 cada 50)", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Verificador", "Responsable"], "registros": ["PE-01", "PE-02", "PE-13"], "parametros": ["Control Pre-Operacional y Operacional (26 ítems BPM) + control de garrones 1 cada 50 animales"], "nota_revision": "Planilla diaria central de BPM.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Momento / Sector", "type": "select", "options": ["Pre-Operacional Playa", "Operacional Playa", "Control Garrones (1/50)", "Despostada / Cámaras"]}, {"key": "valor", "label": "Garrones / Observación puntual", "type": "text", "placeholder": "Ej: Garrones 50, 100, 150 OK · Sin contaminación"}], "modo_control": "checklist_y_valor", "items_checklist": ["Pre-Op / Op: Limpieza e higiene general de superficies, utensilios y equipos", "Higiene personal, indumentaria limpia, botas y lavamanos operativos", "Control de garrones (1 cada 50 animales) sin contaminación fecal/ingesta", "Control de vidrios, plásticos duros y quebradizos en área (PE-13)"]}, {"id": "R-05", "codigo": "R-05", "titulo": "Control POES", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Verificador", "Responsable"], "registros": ["PE-02", "PE-19", "R-20"], "parametros": ["Evaluación Pre-Operacional y Operacional en 28 ítems higiénico-sanitarios y acciones correctivas"], "nota_revision": "Planilla diaria POES.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Sector / Momento POES", "type": "select", "options": ["Pre-Operacional", "Operacional", "Menudencias", "Cámaras / Despacho"]}, {"key": "valor", "label": "Detalle / Químico o condición", "type": "text", "placeholder": "Ej: Inicio de faena verificado · Superficies limpias"}], "modo_control": "checklist_y_valor", "items_checklist": ["Pre-Operacional: Superficies, mesadas, sierras y pisos limpios y sin restos orgánicos", "Operacional: Sanitización continua y orden durante la tarea", "Menudencias / Despojos / Rielería en condiciones higiénicas", "Cámaras y zonas de carga limpias y libres de condensación/goteos"]}, {"id": "R-07", "codigo": "R-07", "titulo": "Verificación Manejo de Digestor", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Responsable", "Verificador"], "registros": ["PE-03", "PE-06"], "parametros": ["Registro de digestor N.º, temperatura (°C), presión, tiempo y N.º de precinto"], "nota_revision": "Auditoría: planilla impresa dice 133 °C / 3 kg/cm² / 5 hs vs. PE-03/PE-06.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Digestor N.º / Precinto", "type": "text", "placeholder": "Ej: Digestor 1 - Precinto 0458"}, {"key": "valor", "label": "Temp (°C) / Presión / Tiempo", "type": "text", "placeholder": "Ej: 133 °C · 3 kg/cm² · 1 h"}], "modo_control": "simple"}, {"id": "R-09", "codigo": "R-09", "titulo": "Verificación T° Esterilizadores", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "03", "vigencia": "2026-06-10", "responsables": ["Verificador", "Responsable"], "registros": ["PE-02", "PE-19"], "parametros": ["Límite obligatorio: temperatura ≥ 82 °C en zona sucia, intermedia y limpia (bovina/ovina)"], "nota_revision": "Rev. 03 vigente desde 10/06/2026.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Esterilizador / Zona", "type": "select", "options": ["Zona Sucia", "Zona Intermedia", "Zona Limpia", "Culato / Menudencias", "Eléctrico de emergencia"]}, {"key": "valor_num", "label": "Temperatura medida (°C)", "type": "number", "step": "0.1", "placeholder": "Ej: 84.5"}], "modo_control": "numerico_umbral", "unidad": "°C", "min_ok": 82.0, "max_ok": null, "regla_texto": "Límite obligatorio: ≥ 82,0 °C (si es < 82,0 °C marca DESVÍO automáticamente)"}, {"id": "R-13", "codigo": "R-13", "titulo": "Control de Desvíos - PCC2", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-04-21", "responsables": ["Responsable", "Verificador"], "registros": ["M-10"], "parametros": ["Límite crítico PCC2: temperatura ≤ 7 °C con termómetro pincha carne calibrado; envío a digestor si desvía"], "nota_revision": "Control crítico de inocuidad.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Bandeja / Lote / Producto", "type": "text", "placeholder": "Ej: Bandeja 12 - Recortes"}, {"key": "valor", "label": "Temperatura núcleo (°C)", "type": "text", "placeholder": "Ej: 5,2 °C (≤ 7 °C)"}], "modo_control": "simple"}, {"id": "R-19", "codigo": "R-19", "titulo": "Limpieza y Lubricación de Roldanas", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Operador", "Supervisor"], "registros": ["PE-22"], "parametros": ["Cantidad de roldanas/ganchos procesados, lavado (SI/NO), lubricación (SI/NO) y verificación"], "nota_revision": "Corregir encabezado 'Cod: R19-' a 'R-19'.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Lote / Cantidad roldanas", "type": "text", "placeholder": "Ej: 180 roldanas bovinas"}, {"key": "valor", "label": "Lavado y Lubricación", "type": "text", "placeholder": "Ej: BAUN-R 10% (65°C) + LUBRIDUAL OK"}], "modo_control": "simple"}, {"id": "R-22", "codigo": "R-22", "titulo": "Registro de Contingencias / Caída de Res", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-04-21", "responsables": ["Calidad", "Supervisor", "SIV"], "registros": ["PE-15", "PE-16", "PE-18"], "parametros": ["Registro de contingencias operativas, caída de res/cortes y acciones correctivas/preventivas"], "nota_revision": "Auditoría: código compartido entre PE-15, PE-16, PE-17 y PE-18.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Tipo de evento", "type": "select", "options": ["Caída de res / corte", "Condensación", "Cisticercosis", "Otra contingencia"]}, {"key": "valor", "label": "Identificación y Acción Correctiva", "type": "text", "placeholder": "Ej: Media res N.º 42 - recorte y ácido láctico 2%"}], "modo_control": "simple"}, {"id": "R-26", "codigo": "R-26", "titulo": "M.E.R. Material Específico de Riesgo", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Responsable", "Verificador"], "registros": ["PE-02", "PE-03"], "parametros": ["Registro diario de producto (Médula espinal/duramadre y/o Seso), cabezas faenadas y peso total (kg)"], "nota_revision": "Unificar sigla M.E.R. / MRDEEB con PE-03.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Material", "type": "select", "options": ["Médula espinal / duramadre", "Seso", "Médula + Seso"]}, {"key": "valor", "label": "Animales faenados / Peso (kg)", "type": "text", "placeholder": "Ej: 85 bovinos · 28,5 kg"}], "modo_control": "simple"}, {"id": "R-27", "codigo": "R-27", "titulo": "Stock de Balas (Insensibilización)", "tipo": "Registro", "sector_tab": "faena", "sector_nombre": "Playa de Faena y Rielería", "revision": "01", "vigencia": "2025-11-20", "responsables": ["Responsable", "Verificador"], "registros": ["PE-02", "PE-04"], "parametros": ["Control de stock inicial, consumo en jornada y recuento físico final de balas de noqueo"], "nota_revision": "Corregir columna duplicada 'Stock Final' en planilla física.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Calibre / Caja", "type": "text", "placeholder": "Ej: Caja .22 / .25 noqueo"}, {"key": "valor", "label": "Inicial / Consumidas / Final", "type": "text", "placeholder": "Ej: Inicio 200 · Uso 86 · Final 114"}], "modo_control": "simple"}, {"id": "HACCP-AP-DESP", "codigo": "HACCP-AP-DESP", "titulo": "Análisis de Peligros - Despostada", "tipo": "HACCP", "sector_tab": "camaras", "sector_nombre": "Despostada, Empaque y Cámaras", "revision": "Vigente", "vigencia": "Vigente", "responsables": ["Equipo HACCP", "Jefe de Calidad", "SIV"], "registros": ["R-04", "R-05", "R-06", "R-10", "PE-21"], "parametros": ["Evaluación de peligros en despostada, fraccionamiento, envasado y conservación frigorífica"], "nota_revision": "Alinear frecuencias con M-11 y PE-21."}, {"id": "M-11", "codigo": "M-11", "titulo": "Manual HACCP - Despostada", "tipo": "HACCP", "sector_tab": "camaras", "sector_nombre": "Despostada, Empaque y Cámaras", "revision": "Vigente", "vigencia": "Vigente", "responsables": ["Jefe de Calidad", "SIV"], "registros": ["R-04", "R-05", "R-06", "R-10", "PE-21"], "parametros": ["Plan HACCP específico para despostada, cadena de frío y empaque"], "nota_revision": "Documento rector del sector despostada."}, {"id": "PE-12", "codigo": "PE-12", "titulo": "Verificación de Termómetros", "tipo": "PE", "sector_tab": "camaras", "sector_nombre": "Despostada, Empaque y Cámaras", "revision": "03", "vigencia": "2026-02-02", "responsables": ["Responsable de Calidad"], "registros": ["R-06"], "parametros": ["Contraste mensual contra termómetro patrón calibrado (INTI/OAA), mín. 2 puntos con diferencia ≥ 2 °C", "Error máximo permitido: ± 2 °C; retiro de servicio y baja si excede"], "nota_revision": "Rev. 03 vigente desde 02/02/2026."}, {"id": "PE-13", "codigo": "PE-13", "titulo": "Control de Vidrios, Plásticos Duros y Quebradizos", "tipo": "PE", "sector_tab": "camaras", "sector_nombre": "Despostada, Empaque y Cámaras", "revision": "03", "vigencia": "2026-02-02", "responsables": ["Personal Operativo", "Supervisor", "Calidad"], "registros": ["R-04"], "parametros": ["Inventario actualizado, protección antiestallido y revisión diaria en BPM (R-04)", "Protocolo ante rotura: detener línea, aislar, descartar producto expuesto y registrar"], "nota_revision": "Rev. 03 vigente desde 02/02/2026."}, {"id": "R-06", "codigo": "R-06", "titulo": "Verificación de Termómetros", "tipo": "Registro", "sector_tab": "camaras", "sector_nombre": "Despostada, Empaque y Cámaras", "revision": "02", "vigencia": "2025-02-13", "responsables": ["Responsable", "Verificador"], "registros": ["PE-12"], "parametros": ["Contraste mensual de equipos 1 a 7 (Calidad, SIV, Producción, Portería, Camarista, Mantenimiento, PCC)"], "nota_revision": "Alineado con PE-12.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Termómetro N.º / Sector", "type": "select", "options": ["1 - Calidad", "2 - SIV", "3 - Producción", "4 - Portería", "5 - Camarista", "6 - Mantenimiento", "7 - PCC"]}, {"key": "valor", "label": "Lectura Patrón vs. Equipo (°C)", "type": "text", "placeholder": "Ej: Patrón 0,0 °C / Equipo +0,2 °C (Dif 0,2 °C)"}], "modo_control": "simple"}, {"id": "R-10", "codigo": "R-10", "titulo": "Control Temperaturas de Cámaras y Salas", "tipo": "Registro", "sector_tab": "camaras", "sector_nombre": "Despostada, Empaque y Cámaras", "revision": "02", "vigencia": "2025-07-14", "responsables": ["Verificador", "Responsable"], "registros": ["M-11"], "parametros": ["Monitoreo cada 3 horas en Cámaras 1–9, Pulmón, Sala Desposte, Menudencias y Túneles/Congelado"], "nota_revision": "Planilla crítica de cadena de frío.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Cámara / Sala", "type": "select", "options": ["Cámara 1", "Cámara 2", "Cámara 3", "Cámara 4", "Cámara 5", "Cámara 6", "Cámara 7", "Cámara 8", "Cámara 9", "Cámara Pulmón", "Sala Desposte", "Cámara Menudencias", "Túnel / Congelado"]}, {"key": "valor_num", "label": "Temperatura (°C)", "type": "number", "step": "0.1", "placeholder": "Ej: 1.8"}], "modo_control": "numerico_umbral", "unidad": "°C", "min_ok": null, "max_ok": 7.0, "regla_texto": "Referencia refrigeración: ≤ 7,0 °C (cámaras de oreo/conservación; si supera el límite o hay desvío, completá qué pasó y cómo se solucionó)"}, {"id": "PE-07", "codigo": "PE-07", "titulo": "Efluentes", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Operarios faena", "Mantenimiento", "Calidad"], "registros": [], "parametros": ["Rejillas de retención de sólidos antes de piletones y tratamiento de sangre"], "nota_revision": "Contrastar destino de sangre sancochada con PE-08."}, {"id": "PE-08", "codigo": "PE-08", "titulo": "Manejo de Subproductos y Residuos", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "03", "vigencia": "2026-09-30", "responsables": ["Operarios faena", "Operarios corrales", "Jefe de Calidad"], "registros": [], "parametros": ["Codificación de bolsas: cristal (comestible), blanca cruz violeta (MRDEEB decomiso), cristal MRDEEB (seso), verde (incomestible), negra (generales)"], "nota_revision": "Rev. 03 vigente desde 30/09/2026."}, {"id": "PE-09", "codigo": "PE-09", "titulo": "Control de Cloro Residual Libre", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "02", "vigencia": "2025-12-21", "responsables": ["Mantenimiento", "Calidad"], "registros": ["R-08"], "parametros": ["Medición con fotómetro HANNA HI701 (10 ml); rango operativo 0,2 a 1 ppm"], "nota_revision": "Corregir en texto 'color' por 'cloro' y cita R-06 por R-08."}, {"id": "PE-10", "codigo": "PE-10", "titulo": "Toma de Muestra de Agua", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "02", "vigencia": "2025-02-13", "responsables": ["Jefe de Mantenimiento", "Calidad"], "registros": ["R-03"], "parametros": ["Flameado/esterilización de grifo ≥ 1 min, purga 1 min, envase estéril refrigerado y envío ≤ 24 h"], "nota_revision": "Completar sectores afectados (cisterna, pozo, tanque, grifo)."}, {"id": "PE-11", "codigo": "PE-11", "titulo": "Muestreo Microbiológico", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-04-21", "responsables": ["Jefe de Calidad"], "registros": ["R-03"], "parametros": ["Superficies 100 cm² (esponjado) / 20 cm² (hisopado); carcasas bovinas (Circ. 3834) y ovinas (Res. 336/16); agua quincenal"], "nota_revision": "Vigente desde 21/04/2025."}, {"id": "PE-14", "codigo": "PE-14", "titulo": "Verificación de Balanzas", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "03", "vigencia": "2026-03-02", "responsables": ["Supervisor de Producción", "Calidad", "Operador"], "registros": ["R-15"], "parametros": ["Verificación diaria al inicio de jornada con pesas patrón certificadas; tolerancia ± 200 g"], "nota_revision": "Rev. 03 vigente desde 02/03/2026."}, {"id": "PE-23", "codigo": "PE-23", "titulo": "Retiro, Lavado y Entrega de Ropa de Trabajo", "tipo": "PE", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "02", "vigencia": "2025-11-24", "responsables": ["Portería", "Supervisor de Faena", "Calidad"], "registros": ["R-28", "R-28.1"], "parametros": ["Control de recepción de lavandería tercerizada en R-28 y muestreo microbiológico mensual aleatorio"], "nota_revision": "Rev. 02 vigente desde 24/11/2025."}, {"id": "R-02", "codigo": "R-02", "titulo": "Capacitaciones y Verificación de Eficacia", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "02", "vigencia": "2026-06-02", "responsables": ["Instructor", "Verificador"], "registros": [], "parametros": ["Registro de asistencia, contenido y evaluación de eficacia (Eficaz / Requiere refuerzo / No eficaz)"], "nota_revision": "Rev. 02 vigente desde 02/06/2026.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Tema / Sector capacitado", "type": "text", "placeholder": "Ej: BPM y lavado de manos - Playa Faena"}, {"key": "valor", "label": "Asistentes / Evaluación eficacia", "type": "text", "placeholder": "Ej: 14 operarios · Eficaz (observación en puesto)"}], "modo_control": "simple"}, {"id": "R-03", "codigo": "R-03", "titulo": "Análisis no Oficiales (Aguas, Superficies, Producto)", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2023-02-13", "responsables": ["Calidad"], "registros": ["PE-10", "PE-11"], "parametros": ["Envíos a laboratorio: agua, hisopos, esponjas, carcasas, insumos, hielo"], "nota_revision": "Revisar actualización de fecha de vigencia (2023).", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Matriz / Punto de muestreo", "type": "text", "placeholder": "Ej: Agua Grifo 4 Playa / Esponja Mesa 2"}, {"key": "valor", "label": "Determinación / Laboratorio", "type": "text", "placeholder": "Ej: Coliformes, E. coli, Mesófilos"}], "modo_control": "simple"}, {"id": "R-08", "codigo": "R-08", "titulo": "Verificación Cloro Libre", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Responsable", "Verificador"], "registros": ["PE-09"], "parametros": ["Medición Pre-Operacional y Operacional (2 turnos) en cisterna, tanques y bajadas de agua (0,2–1,0 ppm)"], "nota_revision": "Planilla diaria de potabilidad.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Punto / Turno", "type": "select", "options": ["Cisterna Principal (Pre-Op)", "Cisterna Principal (Op)", "Tanque / Red Playa", "Bajada Faena", "Bajada Despostada", "Vestuarios / Corrales"]}, {"key": "valor_num", "label": "Cloro libre (ppm)", "type": "number", "step": "0.01", "placeholder": "Ej: 0.55"}], "modo_control": "numerico_umbral", "unidad": "ppm", "min_ok": 0.2, "max_ok": 1.0, "regla_texto": "Rango operativo cloro libre (HANNA HI701): 0,2 a 1,0 ppm (fuera de rango marca DESVÍO)"}, {"id": "R-14", "codigo": "R-14", "titulo": "Limpieza de Cisterna", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2023-02-13", "responsables": ["Mantenimiento", "Calidad"], "registros": ["PE-09", "PE-10"], "parametros": ["Frecuencia cada 60 días (± 7 días) con registro de próxima fecha estimada"], "nota_revision": "Actualizar vigencia 2023 en encabezado.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Cisterna N.º", "type": "text", "placeholder": "Ej: Cisterna N.º 1"}, {"key": "valor", "label": "Tarea y próxima fecha (+60 días)", "type": "text", "placeholder": "Ej: Lavado y desinfección OK · Próx: +60d"}], "modo_control": "simple"}, {"id": "R-15", "codigo": "R-15", "titulo": "Verificación de Balanzas", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Supervisor de Producción", "Verificador"], "registros": ["PE-14"], "parametros": ["Verificación Pre-Operativa y Operativa con pesa patrón certificada (± 200 g)"], "nota_revision": "Alineado con PE-14.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Balanza / Sector", "type": "text", "placeholder": "Ej: Balanza Riel Faena / Empaque"}, {"key": "valor", "label": "Pesa patrón vs. Lectura", "type": "text", "placeholder": "Ej: Patrón 20,0 kg / Lectura 20,0 kg"}], "modo_control": "simple"}, {"id": "R-16", "codigo": "R-16", "titulo": "Check List Mantenimiento (Semanal / Quincenal / Mensual)", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-02-13", "responsables": ["Mantenimiento", "Verificador"], "registros": ["PE-02", "PE-13"], "parametros": ["R-16a Semanal (14 ítems), R-16b Quincenal (17 ítems), R-16c Mensual (9 ítems)"], "nota_revision": "Corregir erratas tipográficas en planilla original.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Frecuencia / Equipo", "type": "select", "options": ["R-16a Semanal", "R-16b Quincenal", "R-16c Mensual", "Correctivo puntual"]}, {"key": "valor", "label": "Detalle inspección / Novedad", "type": "text", "placeholder": "Ej: Caldera, noria, sierras y cortinas PVC OK"}], "modo_control": "simple"}, {"id": "R-17", "codigo": "R-17", "titulo": "Stock de Productos Químicos (y Listados R-17.1 / R-17.2)", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-04-21", "responsables": ["Calidad", "Responsable depósito"], "registros": ["R-17.1", "R-17.2", "R-18"], "parametros": ["Ingresos, lotes, vencimientos, consumos y stock de productos L+D (R-17.1) y MIP (R-17.2)"], "nota_revision": "Incluye listados maestros R-17.1 y R-17.2.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Producto / Lote", "type": "text", "placeholder": "Ej: Hipoclorito / BAUN-R - Lote 2409"}, {"key": "valor", "label": "Movimiento y Stock actual", "type": "text", "placeholder": "Ej: Consumo 5 L · Stock 45 L"}], "modo_control": "simple"}, {"id": "R-18", "codigo": "R-18", "titulo": "Preparación de Productos Químicos", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-04-21", "responsables": ["Responsable"], "registros": ["R-17", "R-17.1"], "parametros": ["Fecha, producto, lote, cantidad insumo, dilución, agua utilizada y aptitud (Apto / No apto)"], "nota_revision": "Permite verificar diluciones reales.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Solución preparada", "type": "text", "placeholder": "Ej: Ácido láctico 2% / Detergente alcalino"}, {"key": "valor", "label": "Insumo + Agua / Lote", "type": "text", "placeholder": "Ej: 200 ml en 10 L agua - Lote A12"}], "modo_control": "simple"}, {"id": "R-20", "codigo": "R-20", "titulo": "Limpieza y Desinfección de Baños y Vestuarios", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-04-21", "responsables": ["Responsable", "Verificador"], "registros": ["R-05"], "parametros": ["Control horario de higiene de pisos, sanitarios, lavamanos y reposición de insumos"], "nota_revision": "Complementa R-05.", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Baño / Vestuario", "type": "select", "options": ["Vestuario Masculino", "Vestuario Femenino", "Baños Playa", "Baños Administración"]}, {"key": "valor", "label": "Tareas realizadas", "type": "text", "placeholder": "Ej: Limpieza, desinfección y reposición jabón/papel"}], "modo_control": "simple"}, {"id": "R-28", "codigo": "R-28", "titulo": "Recepción y Control de Ropa Limpia (y R-28.1)", "tipo": "Registro", "sector_tab": "servicios", "sector_nombre": "Agua, Químicos, Mantenimiento y Personal", "revision": "01", "vigencia": "2025-11-24", "responsables": ["Portería", "Responsable", "Verificador"], "registros": ["PE-23", "R-28.1"], "parametros": ["Control de limpieza, secado, integridad, cantidad contra remito y acondicionamiento"], "nota_revision": "Alineado con PE-23 rev. 02 (24/11/2025).", "es_diario": true, "campos_diarios": [{"key": "etapa", "label": "Remito / Prendas", "type": "text", "placeholder": "Ej: Remito 00412 - 48 equipos completos"}, {"key": "valor", "label": "Estado limpieza / secado / integridad", "type": "text", "placeholder": "Ej: Limpias, secas, sin roturas"}], "modo_control": "simple"}];
+    const STORAGE_KEY = "agrotres_sgc_registros_diarios_v2";
+
+    const AUTH_USERS = {
+      "calidad": { pass: "agrotres5258", nombre: "Calidad · Est. 5258" },
+      "verificador": { pass: "planta2026", nombre: "Verificador de Planta" },
+      "mantenimiento": { pass: "mant5258", nombre: "Mantenimiento / Servicios" }
+    };
+    const SESSION_KEY = "agrotres_sgc_sesion_activa_v1";
+
+    const state = {
+      sector: "ALL",
+      mode: "daily",
+      docSearch: "",
+      docType: "ALL",
+      selectedRegId: "R-04",
+      selectedEstado: "Conforme",
+      filterDate: ""
+    };
+
+    function todayISO() {
+      const d = new Date();
+      const tzOffset = d.getTimezoneOffset() * 60000;
+      return new Date(d - tzOffset).toISOString().slice(0, 10);
+    }
+
+    function nowTime() {
+      const d = new Date();
+      return d.toTimeString().slice(0, 5);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.remove("hidden");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.add("hidden"), 2400);
+    }
+
+
+    const _memSession = {};
+    function readSessionRaw() {
+      try {
+        return sessionStorage.getItem(SESSION_KEY);
+      } catch (e) {
+        return _memSession[SESSION_KEY] || null;
+      }
+    }
+    function writeSessionRaw(val) {
+      try {
+        if (val === null) sessionStorage.removeItem(SESSION_KEY);
+        else sessionStorage.setItem(SESSION_KEY, val);
+      } catch (e) {
+        if (val === null) delete _memSession[SESSION_KEY];
+        else _memSession[SESSION_KEY] = val;
+      }
+    }
+
+    function getSession() {
+      try {
+        return JSON.parse(readSessionRaw() || "null");
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function setSession(userObj) {
+      if (userObj) writeSessionRaw(JSON.stringify(userObj));
+      else writeSessionRaw(null);
+    }
+
+    function applyAuthGate() {
+      const ses = getSession();
+      const overlay = document.getElementById("authOverlay");
+      if (ses && ses.username) {
+        overlay.classList.add("hidden");
+        document.getElementById("activeUserBadge").textContent = ses.nombre || ses.username;
+        const respInput = document.getElementById("regResp");
+        if (respInput && !respInput.value.trim()) {
+          respInput.value = ses.nombre || ses.username;
+        }
+      } else {
+        overlay.classList.remove("hidden");
+        document.getElementById("activeUserBadge").textContent = "";
+      }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const u = document.getElementById("loginUser").value.trim().toLowerCase();
+      const p = document.getElementById("loginPass").value;
+      const errBox = document.getElementById("authError");
+
+      if (AUTH_USERS[u] && AUTH_USERS[u].pass === p) {
+        errBox.classList.add("hidden");
+        setSession({ username: u, nombre: AUTH_USERS[u].nombre });
+        document.getElementById("loginPass").value = "";
+        applyAuthGate();
+        showToast("Sesión iniciada: " + AUTH_USERS[u].nombre);
+      } else {
+        errBox.classList.remove("hidden");
+      }
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", function () {
+      setSession(null);
+      document.getElementById("loginUser").value = "";
+      document.getElementById("loginPass").value = "";
+      document.getElementById("authError").classList.add("hidden");
+      applyAuthGate();
+      showToast("Sesión cerrada");
+    });
+
+    function getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLogs(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function getSectorDocs() {
+      if (state.sector === "ALL") return DOCS_DB;
+      return DOCS_DB.filter(d => d.sector_tab === state.sector);
+    }
+
+    function setEstado(st) {
+      state.selectedEstado = st;
+      document.querySelectorAll("#stateSelector .state-btn").forEach(btn => {
+        btn.classList.remove("sel-ok", "sel-obs", "sel-bad");
+        if (btn.dataset.state === st) {
+          if (st === "Conforme") btn.classList.add("sel-ok");
+          else if (st === "Observación") btn.classList.add("sel-obs");
+          else btn.classList.add("sel-bad");
+        }
+      });
+
+      const showDev = (st === "Observación" || st === "No conforme / Desvío");
+      document.getElementById("deviationBox").classList.toggle("hidden", !showDev);
+    }
+
+    function evaluateNumericThreshold(reg, numVal) {
+      if (numVal === "" || isNaN(parseFloat(numVal))) return null;
+      const v = parseFloat(numVal);
+      if (reg.min_ok !== null && reg.min_ok !== undefined && v < reg.min_ok) return "No conforme / Desvío";
+      if (reg.max_ok !== null && reg.max_ok !== undefined && v > reg.max_ok) return "No conforme / Desvío";
+      return "Conforme";
+    }
+
+    function renderSummary() {
+      const sectorDocs = getSectorDocs();
+      const logs = getLogs().filter(l => state.sector === "ALL" || l.sector_tab === state.sector);
+      const todayLogs = logs.filter(l => l.fecha === todayISO());
+      const desviosHoy = todayLogs.filter(l => l.estado && (l.estado.startsWith("No conforme") || l.estado === "Observación")).length;
+
+      document.getElementById("summaryStrip").innerHTML = `
+        <div class="stat-box">
+          <div class="stat-num">${sectorDocs.length}</div>
+          <div class="stat-lbl">Docs sector</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">${todayLogs.length}</div>
+          <div class="stat-lbl">Controles hoy</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:${desviosHoy > 0 ? '#b91c1c' : '#166534'}">${desviosHoy}</div>
+          <div class="stat-lbl">Novedades hoy</div>
+        </div>
+      `;
+    }
+
+    function populateRegSelect() {
+      const sel = document.getElementById("regSelect");
+      const allRegs = DOCS_DB.filter(d => d.es_diario);
+      const sectorRegs = getSectorDocs().filter(d => d.es_diario);
+      const list = sectorRegs.length > 0 ? sectorRegs : allRegs;
+
+      sel.innerHTML = list.map(r =>
+        `<option value="${r.id}">${r.codigo} — ${r.titulo}</option>`
+      ).join("");
+
+      if (state.selectedRegId && list.some(r => r.id === state.selectedRegId)) {
+        sel.value = state.selectedRegId;
+      } else if (list.length > 0) {
+        state.selectedRegId = list[0].id;
+        sel.value = state.selectedRegId;
+      }
+
+      document.querySelectorAll("#quickRegsBar .quick-chip").forEach(ch => {
+        ch.classList.toggle("active", ch.dataset.reg === state.selectedRegId);
+      });
+
+      renderDynamicFields();
+    }
+
+    function renderDynamicFields() {
+      const reg = DOCS_DB.find(d => d.id === document.getElementById("regSelect").value);
+      const container = document.getElementById("dynamicFields");
+      const banner = document.getElementById("ruleBanner");
+
+      if (!reg) {
+        container.innerHTML = "";
+        banner.classList.add("hidden");
+        return;
+      }
+
+      if (reg.regla_texto) {
+        banner.textContent = reg.regla_texto;
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+      }
+
+      let html = "";
+
+      if (reg.campos_diarios) {
+        html += reg.campos_diarios.map(f => {
+          if (f.type === "select") {
+            return `
+              <div class="form-group">
+                <label class="form-label" for="dyn_${f.key}">${f.label}</label>
+                <select id="dyn_${f.key}" class="form-control">
+                  ${f.options.map(o => `<option value="${o}">${o}</option>`).join("")}
+                </select>
+              </div>
+            `;
+          }
+          if (f.type === "number") {
+            return `
+              <div class="form-group">
+                <label class="form-label" for="dyn_${f.key}">${f.label}</label>
+                <input id="dyn_${f.key}" type="number" step="${f.step || '0.1'}" class="form-control" placeholder="${f.placeholder || ''}" />
+              </div>
+            `;
+          }
+          return `
+            <div class="form-group">
+              <label class="form-label" for="dyn_${f.key}">${f.label}</label>
+              <input id="dyn_${f.key}" type="text" class="form-control" placeholder="${f.placeholder || ''}" />
+            </div>
+          `;
+        }).join("");
+      }
+
+      if (reg.modo_control === "checklist_y_valor" && reg.items_checklist) {
+        html += `
+          <div class="form-group">
+            <label class="form-label">Puntos verificados (${reg.codigo})</label>
+            ${reg.items_checklist.map((item, idx) => `
+              <label class="check-row">
+                <input type="checkbox" class="chk-point" data-idx="${idx}" checked />
+                <span>${item}</span>
+              </label>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+
+      const numInput = document.getElementById("dyn_valor_num");
+      if (numInput && reg.modo_control === "numerico_umbral") {
+        numInput.addEventListener("input", () => {
+          const autoSt = evaluateNumericThreshold(reg, numInput.value);
+          if (autoSt) {
+            setEstado(autoSt);
+            if (autoSt !== "Conforme") {
+              document.getElementById("deviationBox").classList.remove("hidden");
+            }
+          }
+        });
+      }
+
+      container.querySelectorAll(".chk-point").forEach(chk => {
+        chk.addEventListener("change", () => {
+          const anyUnchecked = Array.from(container.querySelectorAll(".chk-point")).some(c => !c.checked);
+          if (anyUnchecked && state.selectedEstado === "Conforme") {
+            setEstado("Observación");
+          }
+        });
+      });
+    }
+
+    function renderLogs() {
+      const container = document.getElementById("logsContainer");
+      let logs = getLogs();
+
+      if (state.sector !== "ALL") {
+        logs = logs.filter(l => l.sector_tab === state.sector);
+      }
+      if (state.filterDate) {
+        logs = logs.filter(l => l.fecha === state.filterDate);
+      }
+
+      if (logs.length === 0) {
+        container.innerHTML = `<p style="color:var(--muted); font-size:0.86rem; text-align:center; padding:12px 0;">No hay controles cargados para este filtro.</p>`;
+        return;
+      }
+
+      container.innerHTML = logs.map(item => {
+        const isDev = item.estado && !item.estado.startsWith("Conforme");
+        const stClass = item.estado.startsWith("Conforme")
+          ? "st-Conforme"
+          : item.estado.startsWith("Observación")
+            ? "st-Observación"
+            : "st-No";
+
+        const devHtml = (item.desvio_que_paso || item.desvio_solucion) ? `
+          <div class="desvio-detail">
+            ${item.desvio_que_paso ? `<div><strong>Qué pasó:</strong> ${item.desvio_que_paso}</div>` : ""}
+            ${item.desvio_solucion ? `<div><strong>Cómo se solucionó:</strong> ${item.desvio_solucion}</div>` : ""}
+          </div>
+        ` : "";
+
+        return `
+          <div class="log-item ${isDev ? 'is-desvio' : ''}">
+            <div class="log-head">
+              <strong>${item.codigo} · ${item.etapa || item.titulo}</strong>
+              <span class="status-pill ${stClass}">${item.estado}</span>
+            </div>
+            <div class="log-meta">${item.fecha} · ${item.hora} hs · ${item.responsable || "Sin responsable"}</div>
+            <div class="log-val">${item.valor || "—"}</div>
+            ${item.checklist_resumen ? `<div style="font-size:0.78rem; color:var(--muted);">Puntos: ${item.checklist_resumen}</div>` : ""}
+            ${item.observacion ? `<div style="font-size:0.79rem; color:var(--muted); margin-top:3px;">Nota: ${item.observacion}</div>` : ""}
+            ${devHtml}
+            <div style="text-align:right; margin-top:6px;">
+              <button class="btn-danger-sm" type="button" onclick="deleteLog('${item.uid}')">Eliminar</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderDocsList() {
+      const container = document.getElementById("docList");
+      let list = getSectorDocs();
+
+      if (state.docType !== "ALL") list = list.filter(d => d.tipo === state.docType);
+
+      if (state.docSearch.trim()) {
+        const q = state.docSearch.trim().toLowerCase();
+        list = list.filter(d =>
+          [d.codigo, d.titulo, d.sector_nombre, d.vigencia, ...(d.parametros || []), ...(d.registros || [])]
+            .join(" ").toLowerCase().includes(q)
+        );
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="panel-box" style="text-align:center; color:var(--muted);">Sin documentos para este filtro.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(d => {
+        const is2026 = String(d.vigencia).startsWith("2026");
+        const quickLoadBtn = d.es_diario
+          ? `<button class="btn-secondary" type="button" onclick="openDailyFor('${d.id}')">Cargar hoy →</button>`
+          : `<span>Vínculos: ${(d.registros || []).join(", ") || "—"}</span>`;
+
+        return `
+          <article class="doc-card">
+            <div class="doc-top">
+              <span class="doc-code">${d.codigo}</span>
+              <span class="badge b-${d.tipo}">${d.tipo}</span>
+            </div>
+            <h3 class="doc-title">${d.titulo}</h3>
+            <div class="doc-vigencia">
+              <span class="tag-meta">Rev. ${d.revision}</span>
+              <span class="tag-meta ${is2026 ? 'v2026' : ''}">Vigencia: ${d.vigencia}</span>
+              <span class="tag-meta">${d.sector_nombre}</span>
+            </div>
+            <ul class="doc-params">
+              ${(d.parametros || []).map(p => `<li>${p}</li>`).join("")}
+            </ul>
+            ${d.nota_revision ? `<div class="doc-note"><strong>Nota:</strong> ${d.nota_revision}</div>` : ""}
+            <div class="doc-actions">
+              <span>Resp: ${(d.responsables || []).slice(0, 2).join(", ")}</span>
+              ${quickLoadBtn}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    window.openDailyFor = function (regId) {
+      state.selectedRegId = regId;
+      switchMode("daily");
+    };
+
+    window.deleteLog = function (uid) {
+      saveLogs(getLogs().filter(l => l.uid !== uid));
+      renderSummary();
+      renderLogs();
+      showToast("Registro eliminado");
+    };
+
+    function switchMode(mode) {
+      state.mode = mode;
+      document.getElementById("btnModeDaily").classList.toggle("active", mode === "daily");
+      document.getElementById("btnModeDocs").classList.toggle("active", mode === "docs");
+      document.getElementById("btnModeCap").classList.toggle("active", mode === "cap");
+      document.getElementById("viewDaily").classList.toggle("hidden", mode !== "daily");
+      document.getElementById("viewDocs").classList.toggle("hidden", mode !== "docs");
+      document.getElementById("viewCap").classList.toggle("hidden", mode !== "cap");
+
+      if (mode === "daily") {
+        populateRegSelect();
+        renderLogs();
+      } else if (mode === "docs") {
+        renderDocsList();
+      } else if (mode === "cap") {
+        populateCapSelectors();
+        switchCapSub(state.capSub || "cronograma");
+      }
+    }
+
+    document.getElementById("sectorTabs").addEventListener("click", e => {
+      const btn = e.target.closest(".sector-tab");
+      if (!btn) return;
+      state.sector = btn.dataset.sector;
+      document.querySelectorAll(".sector-tab").forEach(b => b.classList.toggle("active", b === btn));
+      renderSummary();
+      if (state.mode === "docs") renderDocsList();
+      else {
+        populateRegSelect();
+        renderLogs();
+      }
+    });
+
+    document.getElementById("quickRegsBar").addEventListener("click", e => {
+      const chip = e.target.closest(".quick-chip");
+      if (!chip) return;
+      state.selectedRegId = chip.dataset.reg;
+      document.querySelectorAll("#quickRegsBar .quick-chip").forEach(c => c.classList.toggle("active", c === chip));
+      const sel = document.getElementById("regSelect");
+      if (Array.from(sel.options).some(o => o.value === state.selectedRegId)) {
+        sel.value = state.selectedRegId;
+      } else {
+        state.sector = "ALL";
+        document.querySelectorAll(".sector-tab").forEach(b => b.classList.toggle("active", b.dataset.sector === "ALL"));
+        populateRegSelect();
+      }
+      renderDynamicFields();
+    });
+
+    document.getElementById("stateSelector").addEventListener("click", e => {
+      const btn = e.target.closest(".state-btn");
+      if (!btn) return;
+      setEstado(btn.dataset.state);
+    });
+
+    document.getElementById("btnModeDocs").addEventListener("click", () => switchMode("docs"));
+    document.getElementById("btnModeDaily").addEventListener("click", () => switchMode("daily"));
+    document.getElementById("btnModeCap").addEventListener("click", () => switchMode("cap"));
+
+    document.getElementById("docSearch").addEventListener("input", e => {
+      state.docSearch = e.target.value;
+      renderDocsList();
+    });
+
+    document.getElementById("typeFilters").addEventListener("click", e => {
+      const chip = e.target.closest(".mini-chip");
+      if (!chip) return;
+      state.docType = chip.dataset.type;
+      document.querySelectorAll(".mini-chip").forEach(c => c.classList.toggle("active", c === chip));
+      renderDocsList();
+    });
+
+    document.getElementById("regSelect").addEventListener("change", e => {
+      state.selectedRegId = e.target.value;
+      document.querySelectorAll("#quickRegsBar .quick-chip").forEach(c => {
+        c.classList.toggle("active", c.dataset.reg === state.selectedRegId);
+      });
+      renderDynamicFields();
+    });
+
+    document.getElementById("btnSaveEntry").addEventListener("click", () => {
+      const reg = DOCS_DB.find(d => d.id === document.getElementById("regSelect").value);
+      if (!reg) return;
+
+      const etapaEl = document.getElementById("dyn_etapa");
+      const numEl = document.getElementById("dyn_valor_num");
+      const txtEl = document.getElementById("dyn_valor");
+
+      let valorTexto = "";
+      if (numEl && numEl.value !== "") {
+        valorTexto = `${numEl.value} ${reg.unidad || ""}`.trim();
+      } else if (txtEl && txtEl.value.trim() !== "") {
+        valorTexto = txtEl.value.trim();
+      }
+
+      const checks = Array.from(document.querySelectorAll("#dynamicFields .chk-point"));
+      let checklistResumen = "";
+      if (checks.length > 0) {
+        const okCount = checks.filter(c => c.checked).length;
+        checklistResumen = `${okCount}/${checks.length} puntos marcados`;
+        if (!valorTexto) valorTexto = checklistResumen;
+      }
+
+      const entry = {
+        uid: String(Date.now()),
+        reg_id: reg.id,
+        codigo: reg.codigo,
+        titulo: reg.titulo,
+        sector_tab: reg.sector_tab,
+        sector_nombre: reg.sector_nombre,
+        fecha: document.getElementById("regDate").value || todayISO(),
+        hora: document.getElementById("regTime").value || nowTime(),
+        etapa: etapaEl ? etapaEl.value : "",
+        valor: valorTexto,
+        checklist_resumen: checklistResumen,
+        estado: state.selectedEstado,
+        desvio_que_paso: document.getElementById("desvioQuePaso").value.trim(),
+        desvio_solucion: document.getElementById("desvioSolucion").value.trim(),
+        responsable: document.getElementById("regResp").value.trim(),
+        observacion: document.getElementById("regObs").value.trim()
+      };
+
+      const logs = getLogs();
+      logs.unshift(entry);
+      saveLogs(logs);
+
+      if (numEl) numEl.value = "";
+      if (txtEl) txtEl.value = "";
+      document.getElementById("desvioQuePaso").value = "";
+      document.getElementById("desvioSolucion").value = "";
+      document.getElementById("regObs").value = "";
+      document.getElementById("regTime").value = nowTime();
+      setEstado("Conforme");
+
+      renderSummary();
+      renderLogs();
+      showToast(`Guardado: ${reg.codigo}`);
+    });
+
+    document.getElementById("filterLogDate").addEventListener("change", e => {
+      state.filterDate = e.target.value;
+      renderLogs();
+    });
+
+    document.getElementById("btnShowAllDates").addEventListener("click", () => {
+      state.filterDate = "";
+      document.getElementById("filterLogDate").value = "";
+      renderLogs();
+    });
+
+    document.getElementById("btnExportCsv").addEventListener("click", () => {
+      const logs = getLogs();
+      if (!logs.length) {
+        showToast("No hay registros diarios para exportar");
+        return;
+      }
+      const headers = [
+        "Fecha", "Hora", "Sector", "Codigo", "Registro", "Punto_Etapa",
+        "Valor_Control", "Checklist", "Estado", "Que_Paso_Desvio",
+        "Como_Se_Soluciono", "Responsable", "Observacion"
+      ];
+      const rows = logs.map(l => [
+        l.fecha, l.hora, l.sector_nombre, l.codigo, l.titulo, l.etapa,
+        l.valor, l.checklist_resumen, l.estado, l.desvio_que_paso,
+        l.desvio_solucion, l.responsable, l.observacion
+      ].map(v => `"${String(v || "").replace(/"/g, '""')}"`).join(";"));
+
+      const csv = "\uFEFF" + [headers.join(";"), ...rows].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `agrotres-registros-diarios-${todayISO()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("btnExportJson").addEventListener("click", () => {
+      const payload = {
+        establecimiento: "Frigorífico Agrotres S.A. - Est. Oficial N.º 5258",
+        exportado: new Date().toISOString(),
+        registros_diarios: getLogs()
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `agrotres-respaldo-${todayISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+const CAPACITACIONES_BASE = [{"id": "CAP-01", "tema": "INDUCCIÓN Y BPM", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"], "destinatarios": "Personal ingresante para procesos productivos y de apoyo.", "video_url": "", "video_nota": "Inducción general, higiene personal, indumentaria reglamentaria y Buenas Prácticas de Manufactura (BPM).", "preguntas": [{"q": "[Inducción] Está estrictamente prohibido el uso de todo tipo de joyas (aros, anillos, pulseras, cadenas, relojes) dentro de las áreas de trabajo.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Inducción] Cualquier enfermedad contagiosa, cuadro digestivo, respiratorio o lesión en la piel debe notificarse previo al inicio de tareas para evitar riesgos de contaminación.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Inducción] La indumentaria reglamentaria se utiliza de forma exclusiva dentro de la planta para evitar traer contaminantes del exterior.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Inducción] El uso de guantes no exime del lavado de manos; las manos se deben lavar asiduamente y los guantes mantenerse limpios.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Inducción] Se prohíbe llevar objetos sueltos en los bolsillos del uniforme para evitar caídas accidentales sobre la carne o los envases.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Inducción] Ningún empleado o visitante puede permanecer con ropa de calle o pertenencias personales en zonas de proceso.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] La inocuidad alimentaria es responsabilidad exclusiva del Departamento de Calidad.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] Está permitido ingresar a la planta usando anillos, relojes o cadenas siempre que estén limpios.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] El lavado de manos es obligatorio antes de ingresar a producción, incluso si se van a utilizar guantes.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] En el vestuario se pueden guardar alimentos personales para consumirlos durante los descansos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] La indumentaria de trabajo no debe utilizarse fuera de las instalaciones ni de los sectores autorizados.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] Se puede saltear el circuito del filtro sanitario si se ingresa con prisa a la zona productiva.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] La contaminación cruzada ocurre cuando un peligro se traslada desde una fuente contaminada hacia un alimento, superficie o utensilio.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] El esterilizador de cuchillos elimina automáticamente la suciedad gruesa, por lo que no es necesario enjuagar el cuchillo previamente.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] Está prohibido comer, fumar, mascar chicle o salivar en las áreas de manipulación de alimentos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] Ante la detección de un desvío o problema en el proceso, el operario debe comunicarlo inmediatamente al responsable o corregirlo si es posible.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}]}, {"id": "CAP-02", "tema": "TRAZABILIDAD", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["JUL"], "destinatarios": "Personal involucrado.", "video_url": "", "video_nota": "Trazabilidad de tropas, identificación, romaneo, lotes y rastreo hacia atrás y hacia adelante.", "preguntas": [{"q": "¿Cuál es la finalidad principal de la trazabilidad en el establecimiento?", "opts": ["Rastrear el origen, proceso y destino de los lotes/tropas y garantizar el control ante desvíos", "Sustituir los controles sanitarios de proceso", "Registrar únicamente los horarios de ingreso del personal"], "ok": 0}, {"q": "Ante la pérdida o inconsistencia de identificación en un producto o lote durante el proceso, ¿qué corresponde hacer?", "opts": ["Detener/retener y notificar de inmediato a Calidad y al área correspondiente para resguardar la trazabilidad", "Continuar el proceso sin registrarlo", "Cambiar el número de lote arbitrariamente"], "ok": 0}, {"q": "¿Qué información es clave para vincular materia prima, proceso y producto terminado?", "opts": ["Tropa/lote, fechas, registros de control y destinos/entregas", "Solo el color del envase", "Únicamente el nombre del transportista"], "ok": 0}, {"q": "¿Por qué es indispensable mantener los registros de trazabilidad legibles y archivados?", "opts": ["Para responder a auditorías, inspecciones y eventuales retiros/trazados de manera rápida y fehaciente", "Solo para archivo decorativo", "No es necesario conservarlos una vez terminada la jornada"], "ok": 0}]}, {"id": "CAP-03", "tema": "RECALL", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ABR", "NOV"], "destinatarios": "Personal involucrado.", "video_url": "", "video_nota": "Procedimiento de Recall, bloqueo de mercadería, trazabilidad de lotes y simulacros.", "preguntas": [{"q": "¿Qué busca garantizar el procedimiento de Recall en planta?", "opts": ["La rápida identificación, bloqueo y recuperación de lotes ante un desvío o riesgo sanitario", "La rotación comercial de stock lento", "El lavado semanal de pisos"], "ok": 0}, {"q": "Si se activa una alerta o simulacro de Recall sobre un lote determinado, ¿qué se debe hacer de inmediato?", "opts": ["Identificar, segregar y bloquear el lote afectado y verificar trazabilidad y balances", "Seguir despachando el stock pendiente", "Eliminar los registros del turno"], "ok": 0}, {"q": "¿Para qué sirven los simulacros de Recall programados durante el año?", "opts": ["Para comprobar la eficacia y tiempos de respuesta del sistema de trazabilidad y bloqueo", "Para probar las luces de emergencia", "Solo para cumplir un trámite sin revisión"], "ok": 0}, {"q": "¿Qué datos permiten delimitar con precisión un lote en un Recall?", "opts": ["Identificación de lote/tropa, fechas de producción/faena y registros de despacho/existencias", "El clima del día anterior", "El número de patente sin lote"], "ok": 0}]}, {"id": "CAP-04", "tema": "LIMPIEZA", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "SEP"], "destinatarios": "Responsable / Encargado limpieza.", "video_url": "", "video_nota": "Limpieza y desinfección (POES), dilución y uso de productos químicos, y protocolos asociados.", "preguntas": [{"q": "[Higiene Utensilios] ¿A qué utensilios aplica este protocolo en los sectores de faena y despostada?", "opts": ["a) Cuchillos, chairas y ganchos.", "b) Exclusivamente a las mesas de corte.", "c) Únicamente a las sierras mecánicas."], "ok": 0}, {"q": "[Higiene Utensilios] ¿Quiénes son los responsables para el cumplimiento del procedimiento?", "opts": ["a) Solamente el personal administrativo.", "b) Operarios de Faena y Despostada, Supervisores de Sector y Responsable de Control de Calidad.", "c) Exclusivamente auditores externos de SENASA."], "ok": 1}, {"q": "[Higiene Utensilios] ¿A qué temperatura debe realizarse la inmersión completa del utensilio para su desinfección/esterilización?", "opts": ["a) Agua tibia a 40 °C.", "b) Agua a 82 °C.", "c) Agua fría a 15 °C."], "ok": 1}, {"q": "[Higiene Utensilios] Si se utiliza la chaira limpia y desinfectada para afilar un utensilio, ¿qué medida se exige a continuación?", "opts": ["a) Guardar el utensilio directamente en la vaina.", "b) Volver a desinfectar el utensilio.", "c) Secarlo únicamente con papel seco."], "ok": 1}, {"q": "[Higiene Utensilios] En el sector de Faena, ¿cuál es la frecuencia requerida para el lavado y desinfección?", "opts": ["a) Únicamente una vez al finalizar el turno diario.", "b) Entre animal y animal, al inicio/finalización de la jornada, luego de cada pausa y ante cualquier contaminación.", "c) Cada 2 horas fijas."], "ok": 1}, {"q": "[Higiene Utensilios] En el sector de Despostada, ¿qué frecuencia de aplicación fue validada microbiológicamente?", "opts": ["a) Cada 10 minutos.", "b) Cada 40 minutos.", "c) Cada 3 horas."], "ok": 1}, {"q": "[Roldanas] El producto LUBRIDUAL debe diluirse al 10% en agua tibia antes de sumergir las roldanas.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] La solución de BAUN-R en la 1° Batea debe calentarse mediante inyección de vapor hasta alcanzar una temperatura constante entre 60 °C y 70 °C.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] El paso por la 3° Batea con baño ácido desoxidante (FOSFACID 09) es obligatorio para todas las roldanas en cada ciclo de lavado.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[Roldanas] El tiempo máximo permitido de inmersión en la batea ácida con FOSFACID 09 es de 30 segundos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] El reingreso de las roldanas limpias y lubricadas al interior de la planta se realiza a través de la tronera para evitar la contaminación cruzada.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] El agua de la 2° Batea (Enjuague Térmico) debe mantenerse a una temperatura mínima de 50 °C.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] En caso de contacto accidental de un producto químico con los ojos o la piel, se debe lavar la zona afectada durante un mínimo de 15 minutos en la ducha de seguridad o lavaojos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] Tras la lubricación en la 4° Batea, las roldanas deben dejarse escurrir suspendidas sobre la misma batea durante 5 minutos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Roldanas] El traslado de las roldanas desde la zona de proceso hacia el sector de lavado se realiza por el circuito interior de la planta.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[Roldanas] El registro asociado en el que se deben asentar las actividades del proceso es el Formulario R-19.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}]}, {"id": "CAP-05", "tema": "BPM / MANIPULACIÓN DE ALIMENTOS", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "MAR", "MAY", "AGO", "SEP"], "destinatarios": "Personal operativo.", "video_url": "", "video_nota": "Buenas Prácticas de Manufactura (BPM), manipulación higiénica, higiene de utensilios y control operacional.", "preguntas": [{"q": "[BPM] La inocuidad alimentaria es responsabilidad exclusiva del Departamento de Calidad.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] Está permitido ingresar a la planta usando anillos, relojes o cadenas siempre que estén limpios.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] El lavado de manos es obligatorio antes de ingresar a producción, incluso si se van a utilizar guantes.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] En el vestuario se pueden guardar alimentos personales para consumirlos durante los descansos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] La indumentaria de trabajo no debe utilizarse fuera de las instalaciones ni de los sectores autorizados.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] Se puede saltear el circuito del filtro sanitario si se ingresa con prisa a la zona productiva.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] La contaminación cruzada ocurre cuando un peligro se traslada desde una fuente contaminada hacia un alimento, superficie o utensilio.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] El esterilizador de cuchillos elimina automáticamente la suciedad gruesa, por lo que no es necesario enjuagar el cuchillo previamente.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[BPM] Está prohibido comer, fumar, mascar chicle o salivar en las áreas de manipulación de alimentos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[BPM] Ante la detección de un desvío o problema en el proceso, el operario debe comunicarlo inmediatamente al responsable o corregirlo si es posible.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Higiene Utensilios] ¿A qué temperatura debe realizarse la inmersión completa del utensilio para su desinfección/esterilización?", "opts": ["a) Agua tibia a 40 °C.", "b) Agua a 82 °C.", "c) Agua fría a 15 °C."], "ok": 1}, {"q": "[Higiene Utensilios] En el sector de Faena, ¿cuál es la frecuencia requerida para el lavado y desinfección?", "opts": ["a) Únicamente una vez al finalizar el turno diario.", "b) Entre animal y animal, al inicio/finalización de la jornada, luego de cada pausa y ante cualquier contaminación.", "c) Cada 2 horas fijas."], "ok": 1}, {"q": "[Higiene Utensilios] En el sector de Despostada, ¿qué frecuencia de aplicación fue validada microbiológicamente?", "opts": ["a) Cada 10 minutos.", "b) Cada 40 minutos.", "c) Cada 3 horas."], "ok": 1}]}, {"id": "CAP-06", "tema": "ETIQUETADO EN EL PROCESO Y CONTROL DE ETIQUETAS", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["AGO"], "destinatarios": "Personal involucrado.", "video_url": "", "video_nota": "Control de etiquetas, rotulado en proceso, verificación de datos obligatorios y prevención de errores.", "preguntas": [{"q": "¿Qué debe verificarse en las etiquetas durante el proceso de rotulado?", "opts": ["Que los datos (producto, lote, fechas, establecimiento, conservación) sean legibles, correctos y coincidan con el producto", "Solo que el papel esté pegado", "Únicamente el tamaño del rollo"], "ok": 0}, {"q": "¿Qué corresponde hacer si se detecta un error o falla de impresión en una etiqueta?", "opts": ["Retirar/segregar las etiquetas erróneas o productos mal rotulados y avisar de inmediato a Calidad/supervisión", "Pegarlas de todas formas para no atrasar", "Tapar el error con un marcador"], "ok": 0}, {"q": "Al cambiar de producto o lote en la línea de etiquetado, ¿qué precaución es necesaria?", "opts": ["Despejar etiquetas del lote anterior y verificar que la primera etiqueta del nuevo lote sea correcta", "Dejar los rollos mezclados", "No revisar hasta terminar el turno"], "ok": 0}, {"q": "¿Por qué es crítico el control de etiquetas?", "opts": ["Porque asegura la trazabilidad, la información obligatoria y la correcta identificación sanitaria del producto", "Solo por presentación visual", "Para gastar menos cinta térmica"], "ok": 0}]}, {"id": "CAP-07", "tema": "HACCP - PCC", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["MAR", "NOV"], "destinatarios": "Personal de monitoreo de PCC.", "video_url": "", "video_nota": "Sistema HACCP, Puntos Críticos de Control (PCC), límites críticos, acciones correctivas y conservación de registros.", "preguntas": [{"q": "[HACCP V/F] Los registros del sistema HACCP deben guardarse por un mínimo de 2 años en un lugar seco y que los conserve legibles.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[HACCP V/F] En despostada, el PCC 2 controla la temperatura de la bandeja de recortes. Si no cumple, se envía al digestor.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[HACCP V/F] En menudencias existe un PCC propio en la etapa de vaciado de mondongo.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[HACCP V/F] En faena ovina, el PCC 1 controla las manchas verdes y exige tolerancia cero a la contaminación visible, inspeccionando el 100% de las carcasas.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[HACCP V/F] El Jefe de Planta debe controlar diariamente al azar 10 medias reses por tropa para verificar el PCC en faena.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[HACCP] ¿Cuál es la vida útil de las menudencias refrigeradas y congeladas?", "opts": ["A) 3 días refrigeradas y 6 meses congeladas.", "B) 7 días refrigeradas y 12 meses congeladas.", "C) 15 días refrigeradas y 24 meses congeladas."], "ok": 1}, {"q": "[HACCP] ¿Quién es el Coordinador del Equipo HACCP?", "opts": ["A) Jefe de Calidad.", "B) Gerente General.", "C) Supervisor de obra."], "ok": 0}, {"q": "[HACCP] ¿Qué peligro biológico se identifica como de gravedad alta y alta ocurrencia en las medias reses bovinas?", "opts": ["A) Listeria monocytogenes.", "B) E. coli y Salmonella.", "C) Clostridium botulinum."], "ok": 1}, {"q": "[HACCP] ¿Qué se debe hacer ante manchas verdes o blancas en una media res bovina en el PCC 1?", "opts": ["A) Lavar con agua fría a presión.", "B) Enviar directamente al digestor.", "C) Realizar recorte sanitario, aplicar ácido láctico al 2% y reinspeccionar."], "ok": 2}, {"q": "[HACCP] ¿Cuál es el límite crítico de temperatura para el enfriado de menudencias (PC 1)?", "opts": ["A) ≤ 4 °C.", "B) ≤ 8 °C.", "C) ≤ 12 °C."], "ok": 1}]}, {"id": "CAP-08", "tema": "BIENESTAR ANIMAL (control operacional de BPM en faena de vacunos)", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "JUL"], "destinatarios": "Personal de corrales y playa de faena.", "video_url": "", "video_nota": "Bienestar Animal y Manejo Humanitario en corrales, manga, cajón de noqueo y faena.", "preguntas": [{"q": "[Bienestar Animal] Durante la descarga, se permite gritar y utilizar elementos punzantes para apurar a los animales.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[Bienestar Animal] Los mugidos en las mangas o en el cajón de noqueo pueden indicar malestar y sensibilidad al dolor.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Bienestar Animal] Se pueden mezclar animales de distintos establecimientos para aprovechar mejor el espacio de los corrales.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[Bienestar Animal] Cada vacuno debe contar con un espacio mínimo de 2,50 m² en el corral.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Bienestar Animal] Si los animales permanecen más de 12 horas en los corrales y no se faenan ese día, se les debe dar heno o fardo.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Bienestar Animal] Si un animal no quiere avanzar, se puede acompañarlo con 4 o 5 animales de su misma tropa.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Bienestar Animal] Se puede aplicar la picana eléctrica en cualquier parte del cuerpo del animal.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "[Bienestar Animal] El punto correcto de disparo para insensibilizar al vacuno se encuentra en el cruce de dos líneas imaginarias desde la base de las orejas hacia el ojo opuesto.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Bienestar Animal] El tiempo entre el noqueo y el degüello no debe superar los 60 segundos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "[Bienestar Animal] El pataleo del animal izado siempre indica que está consciente y siente dolor.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}]}, {"id": "CAP-09", "tema": "MATERIAL DE RIESGO", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["JUN", "DIC"], "destinatarios": "Personal de faena y Control de Calidad.", "video_url": "", "video_nota": "Actividad evaluativa - M.E.R.: reconocimiento, manipulación, contención y registro de MRDEEB.", "preguntas": [{"q": "1. ¿Cuál es el objetivo de la capacitación?", "opts": ["A) Cortar y empacar.", "B) Reconocer, manipular y registrar MRDEEB.", "C) Limpiar menudencias."], "ok": 1}, {"q": "2. ¿Qué tejidos son considerados MRDEEB?", "opts": ["A) Hígado y corazón.", "B) Músculos y grasa.", "C) Cerebro, cerebelo, bulbo raquídeo, médula y duramadre."], "ok": 2}, {"q": "3. ¿Qué identifica el casco rojo?", "opts": ["A) Al operario autorizado para manipular MRDEEB.", "B) Al personal de limpieza.", "C) Al supervisor de línea."], "ok": 0}, {"q": "4. ¿Qué debe verificarse en la Zona Limpia?", "opts": ["A) Que la médula quede para el desposte.", "B) Que se retiren completamente médula y duramadre.", "C) Que la canal se lave primero."], "ok": 1}, {"q": "5. ¿Cómo se contiene el MRDEEB?", "opts": ["A) En bolsas comunes.", "B) En bolsas blancas identificadas y canastos exclusivos.", "C) En cajas de cartón."], "ok": 1}, {"q": "6. ¿Qué controlar en cuarteo y desposte?", "opts": ["A) La ausencia de restos de médula y duramadre.", "B) El peso de la carne únicamente.", "C) El color de los recipientes."], "ok": 0}, {"q": "7. ¿Cuál es la secuencia operativa?", "opts": ["A) Cortar, lavar y descartar.", "B) Identificar, separar, contener, pesar, registrar e informar.", "C) Pesar, empacar y despachar."], "ok": 1}]}, {"id": "CAP-10", "tema": "PROTOCOLO DE PORTERÍA Y CONTROL DE INGRESOS", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"], "destinatarios": "Personal de portería, ingresos y visitas.", "video_url": "", "video_nota": "Evaluación de Capacitación: Protocolo de Portería y Control de Ingresos (AGROTRES S.A.).", "preguntas": [{"q": "1. Si un técnico externo debe realizar una reparación urgente de pocos minutos en una cámara productiva, puede ingresar sin ropa sanitaria ni cofia debido a la brevedad del trabajo.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "2. El personal de portería debe consultar el motivo del ingreso, identificar a la persona y verificar su autorización previa antes de permitir el acceso al establecimiento.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "3. Los prestadores de servicios externos están autorizados a utilizar cualquier producto químico o plaguicida que traigan consigo sin necesidad de aprobación previa del área correspondiente.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "4. Toda persona que necesite ingresar a una sala productiva debe transitar obligatoriamente por el filtro sanitario y realizar el lavado y desinfección de manos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "5. Si un visitante o contratista no dispone de la indumentaria sanitaria requerida, el portero puede autorizar una excepción para no demorar la tarea.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "6. El personal de empresas tercerizadas y servicios externos tiene la obligación de cumplir con las Buenas Prácticas de Manufactura (BPM) al acceder a sectores productivos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "7. Ante cualquier duda sobre la autorización de una persona, un producto químico o un trabajo técnico, el portero debe consultar al responsable designado antes de habilitar el acceso.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "8. Los vehículos y transportistas pueden circular libremente por cualquier área del frigorífico sin necesidad de ajustarse a un recorrido o sector autorizado.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "9. La cofia debe colocarse correctamente antes de ingresar al área productiva y debe cubrir adecuadamente la totalidad del cabello.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "10. Si un prestador de servicios (como control de plagas o mantenimiento) ingresa con productos químicos no informados previamente, el portero debe impedir su uso hasta confirmar su aprobación.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}]}, {"id": "CAP-11", "tema": "NORMAS PARA CONTRATISTAS DE AGROTRES", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"], "destinatarios": "Empresas contratistas y prestadores externos.", "video_url": "", "video_nota": "Normas para Contratistas de Agrotres: ingreso, filtro sanitario, insumos químicos, residuos y desvíos.", "preguntas": [{"q": "1. Toda persona externa que ingrese al establecimiento debe identificarse en portería, informar la empresa a la que pertenece, el motivo de su visita y el sector al que se dirige.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "2. La autorización general de ingreso a la planta otorga acceso automático y libre a todos los sectores e instalaciones de AGROTRES S.A.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "3. En el caso de intervenciones breves o de urgencia, se permite ingresar a las áreas productivas vistiendo ropa de calle en reemplazo de la indumentaria sanitaria.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "4. Para ingresar a salas productivas (faena, empaque, cámaras, etc.), es obligatorio ingresar por el filtro sanitario habilitado y realizar el lavado y desinfección de manos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "5. Es obligación de los contratistas retirar todos los materiales, herramientas y residuos generados durante sus actividades al finalizar el trabajo.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "6. Los prestadores externos pueden ingresar y aplicar productos químicos, plaguicidas o lubricantes sin necesidad de contar con la autorización previa del responsable de AGROTRES.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "7. El personal de control de plagas puede aplicar tratamientos y productos en cualquier sector del establecimiento según su propio criterio, sin restricción de acceso.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "8. Ante cualquier derrame, daño en instalaciones, rotura o incidente detectado, el prestador debe informarlo de inmediato al responsable de AGROTRES.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "9. Ante un desvío o incidente, el prestador debe adoptar por su propia cuenta cualquier medida correctiva que considere adecuada, aun si excede sus competencias.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "10. Cada empresa contratista es responsable de garantizar que su personal asignado conozca las normas y cuente con los elementos de protección e indumentaria requeridos.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}]}, {"id": "CAP-12", "tema": "ANIMALES CAÍDOS Y MUERTOS", "entidad": "Responsable de calidad - Macarena Schischke", "meses": ["ENE", "JUL"], "destinatarios": "Personal de corrales, faena y S.I.V.", "video_url": "", "video_nota": "Evaluación de Capacitación: Procedimientos Operativos de Animales Caídos y Muertos.", "preguntas": [{"q": "1. Los animales que llegan a la planta caídos o muertos en los camiones tienen prioridad para la descarga.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "2. Al descargar un camión con un animal caído o muerto, lo primero que se debe hacer es bajar al animal afectado.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "3. El responsable de corrales debe dar aviso al Servicio de Inspección Veterinaria (S.I.V.) mediante la emisión de Vales.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "4. Para la insensibilización del animal caído se utiliza el equipo Jarvis modelo PAS.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "5. El degüello del animal caído se realiza una vez que el animal ha sido trasladado a la sala de faena de emergencia.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "6. Si un animal aparece caído en un corral, se interviene de inmediato sin necesidad de trasladar a los demás animales.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "7. Tras el diagnóstico del S.I.V. en la sala de necropsia, el destino final del animal muerto es enviarlo entero al digestor.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "8. El personal destinado a realizar la necropsia debe estar vestido con ropa descartable.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 0}, {"q": "9. Si se detecta un animal muerto en un corral, el resto de la tropa se deja en ese mismo corral hasta retirar el cuerpo.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}, {"q": "10. Las canales de los animales caídos faenados en la sala de emergencia nunca pueden ser aprobadas para consumo humano.", "opts": ["Verdadero (V)", "Falso (F)"], "ok": 1}]}];
+
+    const STORAGE_ASIST_KEY = "agrotres_capacitaciones_asistencia_v1";
+    const STORAGE_VIDEOS_KEY = "agrotres_capacitaciones_videos_v1";
+    const MESES_ORDEN = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+    Object.assign(state, {
+      capSub: "cronograma",
+      mesFiltro: "ALL",
+      temaActivoId: "CAP-01",
+      quizAprobado: false,
+      quizPuntajeTexto: "",
+      certSelectedUid: ""
+    });
+
+    function todayAR() {
+      return todayISO().split("-").reverse().join("/");
+    }
+
+    const _memAsist = [];
+    const _memVideos = {};
+
+    function getVideoOverrides() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_VIDEOS_KEY) || "null") || Object.assign({}, _memVideos);
+      } catch (e) {
+        return Object.assign({}, _memVideos);
+      }
+    }
+
+    function saveVideoOverride(temaId, url) {
+      _memVideos[temaId] = url;
+      try {
+        const cur = getVideoOverrides();
+        cur[temaId] = url;
+        localStorage.setItem(STORAGE_VIDEOS_KEY, JSON.stringify(cur));
+      } catch (e) {}
+    }
+
+    function getCapacitaciones() {
+      const overrides = getVideoOverrides();
+      return CAPACITACIONES_BASE.map(c => ({
+        ...c,
+        video_url: overrides[c.id] !== undefined ? overrides[c.id] : c.video_url
+      }));
+    }
+
+    function getAsistencias() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_ASIST_KEY) || "null") || _memAsist.slice();
+      } catch (e) {
+        return _memAsist.slice();
+      }
+    }
+
+    function saveAsistencias(list) {
+      _memAsist.length = 0;
+      _memAsist.push(...list);
+      try {
+        localStorage.setItem(STORAGE_ASIST_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function buildEmbedHtml(url, nota) {
+      if (!url || !url.trim()) {
+        return `
+          <div class="video-placeholder">
+            <strong>Video pendiente de enlace</strong><br/>
+            <span>${nota}</span><br/>
+            <span style="font-size:0.78rem;">Abrí <em>"Configurar / pegar enlace del video"</em> abajo para vincular el video de YouTube o Google Drive.</span>
+          </div>
+        `;
+      }
+      const clean = url.trim();
+      const ytMatch = clean.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (ytMatch) {
+        return `
+          <div class="video-frame-wrap">
+            <iframe src="https://www.youtube.com/embed/${ytMatch[1]}" allowfullscreen title="Video capacitación"></iframe>
+          </div>
+        `;
+      }
+      const gdMatch = clean.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (gdMatch) {
+        return `
+          <div class="video-frame-wrap">
+            <iframe src="https://drive.google.com/file/d/${gdMatch[1]}/preview" allow="autoplay" title="Video capacitación Drive"></iframe>
+          </div>
+        `;
+      }
+      if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(clean)) {
+        return `
+          <div class="video-frame-wrap">
+            <video controls src="${clean}"></video>
+          </div>
+        `;
+      }
+      return `
+        <div class="video-placeholder">
+          <a href="${clean}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display:inline-block; text-decoration:none;">
+            ▶ Abrir video de capacitación en nueva pestaña
+          </a>
+        </div>
+      `;
+    }
+
+    function renderCapCronograma() {
+      const caps = getCapacitaciones();
+      const asist = getAsistencias();
+      const filtradas = state.mesFiltro === "ALL"
+        ? caps
+        : caps.filter(c => c.meses.includes(state.mesFiltro));
+
+      document.getElementById("topicsCardsList").innerHTML = filtradas.map(c => {
+        const countAsist = asist.filter(a => a.tema_id === c.id).length;
+        const hasVid = Boolean(c.video_url && c.video_url.trim());
+        return `
+          <div class="topic-card">
+            <div class="topic-head">
+              <div>
+                <div class="topic-title">${c.tema}</div>
+                <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">
+                  <strong>Destinatarios:</strong> ${c.destinatarios}
+                </div>
+              </div>
+              <span class="badge ${hasVid ? 'b-ok' : 'b-warn'}">${hasVid ? 'Video cargado' : 'Sin enlace video'}</span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:5px; margin:8px 0;">
+              ${c.meses.map(m => `<span class="badge b-info">${m}</span>`).join("")}
+              <span class="badge" style="background:#f1f5f9; color:#334155;">Asistentes: ${countAsist}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">
+              <span style="font-size:0.75rem; color:var(--muted);">${c.entidad}</span>
+              <button class="btn-secondary" type="button" onclick="iniciarTemaCap('${c.id}')">Abrir capacitación →</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const headRow = `
+        <tr>
+          <th style="text-align:left; padding-left:10px;">Actividad / Tema</th>
+          ${MESES_ORDEN.map(m => `<th>${m}</th>`).join("")}
+          <th>Personal Destinado</th>
+        </tr>
+      `;
+      const bodyRows = caps.map(c => `
+        <tr>
+          <td class="left-col"><strong>${c.tema}</strong></td>
+          ${MESES_ORDEN.map(m => `<td>${c.meses.includes(m) ? '<span class="x-mark">X</span>' : ''}</td>`).join("")}
+          <td class="left-col" style="font-size:0.74rem;">${c.destinatarios}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("matrixTable").innerHTML = `<thead>${headRow}</thead><tbody>${bodyRows}</tbody>`;
+    }
+
+    function populateCapSelectors() {
+      const caps = getCapacitaciones();
+      const sel = document.getElementById("selTema");
+      sel.innerHTML = caps.map(c => `<option value="${c.id}">${c.tema}</option>`).join("");
+      sel.value = state.temaActivoId;
+
+      const filterPlan = document.getElementById("filterPlanillaTema");
+      const prevVal = filterPlan.value || "ALL";
+      filterPlan.innerHTML = `<option value="ALL">Todos los temas</option>` +
+        caps.map(c => `<option value="${c.id}">${c.tema}</option>`).join("");
+      filterPlan.value = prevVal;
+    }
+
+    function renderCapCursada() {
+      const caps = getCapacitaciones();
+      const tema = caps.find(c => c.id === state.temaActivoId) || caps[0];
+      state.temaActivoId = tema.id;
+      state.quizAprobado = false;
+      state.quizPuntajeTexto = "";
+
+      document.getElementById("temaMetaBox").innerHTML = `
+        <strong>Disertante:</strong> ${tema.entidad} · <strong>Meses cronograma:</strong> ${tema.meses.join(", ")} · <strong>Destinatarios:</strong> ${tema.destinatarios}
+      `;
+      document.getElementById("inputVideoUrl").value = tema.video_url || "";
+      document.getElementById("videoViewerArea").innerHTML = buildEmbedHtml(tema.video_url, tema.video_nota);
+
+      document.getElementById("asistFecha").value = todayAR();
+      document.getElementById("asistHora").value = nowTime();
+
+      const qContainer = document.getElementById("quizQuestionsContainer");
+      qContainer.innerHTML = tema.preguntas.map((item, idx) => `
+        <div class="quiz-card">
+          <div class="quiz-q">${idx + 1}. ${item.q}</div>
+          ${item.opts.map((opt, oIdx) => `
+            <label class="quiz-opt">
+              <input type="radio" name="q_${idx}" value="${oIdx}" />
+              <span>${opt}</span>
+            </label>
+          `).join("")}
+        </div>
+      `).join("");
+
+      const resBanner = document.getElementById("quizResultBanner");
+      resBanner.classList.add("hidden");
+      resBanner.textContent = "";
+    }
+
+    function renderCapCertificado() {
+      const asist = getAsistencias();
+      const sel = document.getElementById("selCertRegistro");
+      const sheet = document.getElementById("certSheetContent");
+
+      if (!asist.length) {
+        sel.innerHTML = `<option value="">Sin asistentes registrados aún</option>`;
+        sheet.innerHTML = `
+          <div class="cert-top-bar"></div>
+          <div class="cert-corner-tl"></div>
+          <div class="cert-corner-br"></div>
+          <div style="padding:28px 16px; color:var(--muted);">
+            <div class="cert-header">Frigorífico Agrotres S.A. · Establecimiento Oficial N.º 5258</div>
+            <div class="cert-main-title" style="margin-top:10px;">Certificado de Asistencia y Aprobación</div>
+            <p style="margin:12px auto 0; max-width:560px; font-size:0.92rem;">
+              Todavía no hay certificados emitidos.<br/>
+              Completá la evaluación y el formulario de asistencia en <strong>"2. Video + Evaluación + Asistencia"</strong> para generar el certificado en tamaño A4.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      sel.innerHTML = asist.map(a =>
+        `<option value="${a.uid}">${a.nombre} (DNI ${a.dni}) — ${a.tema_nombre} (${a.fecha})</option>`
+      ).join("");
+
+      if (state.certSelectedUid && asist.some(a => a.uid === state.certSelectedUid)) {
+        sel.value = state.certSelectedUid;
+      } else {
+        state.certSelectedUid = asist[0].uid;
+        sel.value = state.certSelectedUid;
+      }
+
+      const reg = asist.find(a => a.uid === state.certSelectedUid) || asist[0];
+
+      sheet.innerHTML = `
+        <div class="cert-top-bar"></div>
+        <div class="cert-corner-tl"></div>
+        <div class="cert-corner-br"></div>
+
+        <div>
+          <div class="cert-emblem" aria-label="Logo Establecimiento" style="background:#ffffff;border:1px solid #cbd5e1;padding:4px 8px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="44" height="44" role="img" aria-label="Logo Establecimiento">
+              <path d="M 10 108 L 96 108 Q 108 108 108 96 L 108 12" fill="none" stroke="#29abe2" stroke-width="5" stroke-linecap="round"/>
+              <path d="M 38 10 L 98 10 L 98 84 Q 98 98 84 98 L 10 98 L 10 38 Q 10 10 38 10 Z" fill="#464749"/>
+              <path d="M 38 78 C 40 54, 54 44, 72 42 C 81 41, 86 36, 86 29 C 86 22, 80 18, 70 18 L 53 18 L 56 27 L 69 27 C 74 27, 76 29, 76 31 C 76 34, 72 36, 65 37 C 46 40, 34 52, 32 78 Z" fill="#29abe2"/>
+              <path d="M 46 16 L 56 16 L 78 83 L 66 83 L 61 66 L 39 66 L 33 83 L 22 83 Z M 42 57 L 58 57 L 50 30 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div class="cert-header">Frigorífico Agrotres S.A. · Establecimiento Oficial N.º 5258</div>
+          <div class="cert-sub">Sistema de Gestión de Calidad e Inocuidad Alimentaria · Programa Anual de Capacitación (R-02)</div>
+          <div class="cert-divider"></div>
+          <div class="cert-main-title">Certificado de Asistencia y Aprobación</div>
+        </div>
+
+        <div>
+          <div class="cert-body">
+            Se certifica por la presente que<br/>
+            <div class="cert-name">${reg.nombre}</div><br/>
+            <strong>DNI N.º ${reg.dni}</strong>${reg.sector ? ` · Sector: <strong>${reg.sector}</strong>` : ""}<br/>
+            ha participado y aprobado satisfactoriamente la capacitación interna correspondiente al Cronograma Anual sobre:
+          </div>
+
+          <div class="cert-topic-box">
+            ${reg.tema_nombre}
+          </div>
+
+          <div class="cert-meta-pills">
+            <span class="cert-meta-pill"><strong>Fecha:</strong> ${reg.fecha}</span>
+            <span class="cert-meta-pill"><strong>Evaluación:</strong> ${reg.resultado_eval}</span>
+            <span class="cert-meta-pill"><strong>Verificación R-02:</strong> ${reg.eficacia}</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="cert-signs">
+            <div>
+              <div class="sign-line">
+                <strong>Lic. Macarena Schischke</strong><br/>
+                Responsable de Calidad · Est. Oficial N.º 5258
+              </div>
+            </div>
+            <div class="cert-seal">
+              <span>AGROTRES</span>
+              <span>EST. 5258</span>
+              <span>CALIDAD</span>
+            </div>
+            <div>
+              <div class="sign-line">
+                <strong>Firma del Asistente</strong><br/>
+                ${reg.nombre} · DNI ${reg.dni}
+              </div>
+            </div>
+          </div>
+          <div class="cert-footer-code">
+            Documento generado desde el Sistema de Capacitaciones R-02 · Frigorífico Agrotres S.A. · Código: ${reg.tema_id}-${reg.uid.slice(-5)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCapPlanilla() {
+      const container = document.getElementById("asistenciasListContainer");
+      let list = getAsistencias();
+      const temaFilter = document.getElementById("filterPlanillaTema").value;
+      const q = document.getElementById("filterPlanillaSearch").value.trim().toLowerCase();
+
+      if (temaFilter && temaFilter !== "ALL") {
+        list = list.filter(a => a.tema_id === temaFilter);
+      }
+      if (q) {
+        list = list.filter(a =>
+          [a.nombre, a.dni, a.fecha, a.tema_nombre, a.sector].join(" ").toLowerCase().includes(q)
+        );
+      }
+
+      if (!list.length) {
+        container.innerHTML = `<p style="text-align:center; color:var(--muted); font-size:0.86rem; padding:12px 0;">No hay registros de asistencia para mostrar.</p>`;
+        return;
+      }
+
+      container.innerHTML = list.map(a => `
+        <div class="topic-card">
+          <div class="topic-head">
+            <div>
+              <strong>${a.nombre}</strong> · <span style="color:var(--primary); font-weight:700;">DNI ${a.dni}</span>
+              <div style="font-size:0.8rem; color:var(--muted);">${a.tema_nombre}</div>
+            </div>
+            <span class="badge b-ok">${a.resultado_eval}</span>
+          </div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-top:4px;">
+            Fecha: <strong>${a.fecha}</strong> (${a.hora} hs) ${a.sector ? `· Sector: ${a.sector}` : ""} · Eficacia R-02: ${a.eficacia}
+          </div>
+          ${a.observacion ? `<div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">Obs: ${a.observacion}</div>` : ""}
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button class="btn-secondary" type="button" onclick="verCertificadoCap('${a.uid}')">Ver Certificado</button>
+            <button class="btn-danger-sm" type="button" onclick="eliminarAsistenciaCap('${a.uid}')">Eliminar</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function switchCapSub(subName) {
+      state.capSub = subName;
+      document.querySelectorAll("#capSubTabs .cap-subtab").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.capsub === subName);
+      });
+      ["cronograma", "cursada", "certificado", "planilla"].forEach(s => {
+        document.getElementById("capsub-" + s).classList.toggle("hidden", s !== subName);
+      });
+      if (subName === "cronograma") renderCapCronograma();
+      if (subName === "cursada") renderCapCursada();
+      if (subName === "certificado") renderCapCertificado();
+      if (subName === "planilla") renderCapPlanilla();
+    }
+
+    window.iniciarTemaCap = function (temaId) {
+      state.temaActivoId = temaId;
+      document.getElementById("selTema").value = temaId;
+      switchCapSub("cursada");
+    };
+
+    window.verCertificadoCap = function (uid) {
+      state.certSelectedUid = uid;
+      switchCapSub("certificado");
+    };
+
+    window.eliminarAsistenciaCap = function (uid) {
+      saveAsistencias(getAsistencias().filter(a => a.uid !== uid));
+      renderCapPlanilla();
+      showToast("Registro de asistencia eliminado");
+    };
+
+    document.getElementById("capSubTabs").addEventListener("click", e => {
+      const btn = e.target.closest(".cap-subtab");
+      if (!btn) return;
+      switchCapSub(btn.dataset.capsub);
+    });
+
+    document.getElementById("monthFilterBar").addEventListener("click", e => {
+      const chip = e.target.closest(".m-chip");
+      if (!chip) return;
+      state.mesFiltro = chip.dataset.mes;
+      document.querySelectorAll("#monthFilterBar .m-chip").forEach(c => c.classList.toggle("active", c === chip));
+      renderCapCronograma();
+    });
+
+    document.getElementById("selTema").addEventListener("change", e => {
+      state.temaActivoId = e.target.value;
+      renderCapCursada();
+    });
+
+    document.getElementById("btnSaveVideoUrl").addEventListener("click", () => {
+      const url = document.getElementById("inputVideoUrl").value.trim();
+      saveVideoOverride(state.temaActivoId, url);
+      renderCapCursada();
+      showToast("Enlace de video actualizado");
+    });
+
+    document.getElementById("chkEvaluacionExterna").addEventListener("change", e => {
+      const ext = e.target.checked;
+      document.getElementById("quizSection").classList.toggle("hidden", ext);
+      document.getElementById("externalEvalBox").classList.toggle("hidden", !ext);
+    });
+
+    document.getElementById("btnCorregirQuiz").addEventListener("click", () => {
+      const caps = getCapacitaciones();
+      const tema = caps.find(c => c.id === state.temaActivoId);
+      if (!tema) return;
+
+      let correctas = 0;
+      let sinResponder = 0;
+      tema.preguntas.forEach((p, idx) => {
+        const checked = document.querySelector(`input[name="q_${idx}"]:checked`);
+        if (!checked) {
+          sinResponder++;
+        } else if (parseInt(checked.value, 10) === p.ok) {
+          correctas++;
+        }
+      });
+
+      const banner = document.getElementById("quizResultBanner");
+      banner.classList.remove("hidden");
+
+      if (sinResponder > 0) {
+        banner.style.background = "#fef3c7";
+        banner.style.color = "#92400e";
+        banner.textContent = `Faltan responder ${sinResponder} pregunta(s) antes de corregir.`;
+        return;
+      }
+
+      const total = tema.preguntas.length;
+      const pct = Math.round((correctas / total) * 100);
+      const aprobado = pct >= 75;
+
+      state.quizAprobado = aprobado;
+      state.quizPuntajeTexto = `Aprobado (${correctas}/${total} · ${pct}%)`;
+
+      if (aprobado) {
+        banner.style.background = "#dcfce7";
+        banner.style.color = "#166534";
+        banner.textContent = `✓ Evaluación APROBADA: ${correctas} de ${total} respuestas correctas (${pct}%). Ya podés completar la asistencia y emitir el certificado.`;
+      } else {
+        banner.style.background = "#fee2e2";
+        banner.style.color = "#991b1b";
+        banner.textContent = `✕ No alcanzó el mínimo (75%): ${correctas} de ${total} (${pct}%). Revisá el video y volvé a intentar.`;
+      }
+    });
+
+    document.getElementById("btnRegistrarAsistencia").addEventListener("click", () => {
+      const nombre = document.getElementById("asistNombre").value.trim();
+      const dni = document.getElementById("asistDni").value.trim();
+      const sector = document.getElementById("asistSector").value.trim();
+      const obs = document.getElementById("asistObs").value.trim();
+      const esExterna = document.getElementById("chkEvaluacionExterna").checked;
+
+      if (!nombre || !dni) {
+        showToast("Completá Nombre y Apellido y DNI");
+        return;
+      }
+
+      if (!esExterna && !state.quizAprobado) {
+        showToast("Primero aprobá la evaluación (o marcá evaluación externa)");
+        return;
+      }
+
+      const caps = getCapacitaciones();
+      const tema = caps.find(c => c.id === state.temaActivoId);
+
+      const resultadoEval = esExterna
+        ? (document.getElementById("extNota").value.trim() || "Aprobado")
+        : state.quizPuntajeTexto;
+
+      const eficacia = esExterna
+        ? document.getElementById("extEficacia").value
+        : "Eficaz";
+
+      const nuevoReg = {
+        uid: String(Date.now()),
+        fecha: todayAR(),
+        hora: nowTime(),
+        tema_id: tema.id,
+        tema_nombre: tema.tema,
+        disertante: tema.entidad,
+        nombre,
+        dni,
+        sector,
+        resultado_eval: resultadoEval,
+        eficacia,
+        observacion: obs
+      };
+
+      const list = getAsistencias();
+      list.unshift(nuevoReg);
+      saveAsistencias(list);
+
+      document.getElementById("asistNombre").value = "";
+      document.getElementById("asistDni").value = "";
+      document.getElementById("asistSector").value = "";
+      document.getElementById("asistObs").value = "";
+
+      state.certSelectedUid = nuevoReg.uid;
+      showToast("Asistencia registrada y certificado generado");
+      switchCapSub("certificado");
+    });
+
+    document.getElementById("selCertRegistro").addEventListener("change", e => {
+      state.certSelectedUid = e.target.value;
+      renderCapCertificado();
+    });
+
+    document.getElementById("filterPlanillaTema").addEventListener("change", renderCapPlanilla);
+    document.getElementById("filterPlanillaSearch").addEventListener("input", renderCapPlanilla);
+
+    document.getElementById("btnExportAsistCsv").addEventListener("click", () => {
+      const list = getAsistencias();
+      if (!list.length) {
+        showToast("No hay asistencias registradas para exportar");
+        return;
+      }
+      const headers = [
+        "Fecha", "Hora", "Tema_Capacitacion", "Disertante",
+        "Nombre_y_Apellido", "DNI", "Sector", "Evaluacion", "Eficacia_R02", "Observacion"
+      ];
+      const rows = list.map(a => [
+        a.fecha, a.hora, a.tema_nombre, a.disertante,
+        a.nombre, a.dni, a.sector, a.resultado_eval, a.eficacia, a.observacion
+      ].map(v => `"${String(v || "").replace(/"/g, '""')}"`).join(";"));
+
+      const csv = "\uFEFF" + [headers.join(";"), ...rows].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `agrotres-asistencia-R02-${todayISO()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("btnExportAsistJson").addEventListener("click", () => {
+      const payload = {
+        establecimiento: "Frigorífico Agrotres S.A. - Est. Oficial N.º 5258",
+        registro: "R-02 Capacitaciones y Verificación de Eficacia",
+        exportado: new Date().toISOString(),
+        asistencias: getAsistencias()
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `agrotres-capacitaciones-R02-${todayISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    const hoy = todayISO();
+    document.getElementById("todayBadge").textContent = hoy.split("-").reverse().join("/");
+    document.getElementById("regDate").value = hoy;
+    document.getElementById("regTime").value = nowTime();
+    document.getElementById("filterLogDate").value = hoy;
+    state.filterDate = hoy;
+
+    applyAuthGate();
+    renderSummary();
+    populateRegSelect();
+    renderLogs();
+  </script>
+</body>
+</html>
